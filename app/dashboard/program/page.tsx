@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db/prisma";
 import { generateProgramJoinQr } from "@/lib/qr/generate";
 import { getAppUrl } from "@/lib/app-url";
 import { ProgramForm } from "@/components/merchant/program-form";
+import { formatVisits } from "@/lib/format";
 
 /**
  * cf SPEC §7 — Création du programme, puis affichage et téléchargement du QR
@@ -76,7 +77,7 @@ async function ProgramDetails({
         <div className="flex flex-col gap-0.5">
           <span className="text-xs font-medium text-neutral-500">Règle</span>
           <span className="font-medium text-neutral-900">
-            {program.visitsRequired} visites → {program.rewardName}
+            {formatVisits(program.visitsRequired)} → {program.rewardName}
           </span>
         </div>
         <div className="flex flex-col gap-0.5">

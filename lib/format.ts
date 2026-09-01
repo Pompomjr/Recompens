@@ -42,3 +42,18 @@ export function formatVisitDelta(delta: number) {
   if (delta < 0) return `${delta}`;
   return "—";
 }
+
+/**
+ * "1 visite" / "10 visites".
+ *
+ * Un programme réglé sur une seule visite affichait "1 visites" : un détail,
+ * mais c'est la première phrase que lit le client en scannant le QR.
+ */
+export function formatVisits(count: number) {
+  return `${count} ${visitsLabel(count)}`;
+}
+
+/** Le mot seul, pour un libellé placé sous un compteur "X / Y". */
+export function visitsLabel(count: number) {
+  return count > 1 ? "visites" : "visite";
+}

@@ -10,6 +10,7 @@ import {
   formatTime,
   formatTransactionType,
   formatVisitDelta,
+  visitsLabel,
 } from "@/lib/format";
 
 /**
@@ -66,7 +67,9 @@ export default async function CustomerCardPage({
         <span className="text-4xl font-bold tabular-nums text-neutral-900">
           {membership.visitCount} / {program.visitsRequired}
         </span>
-        <span className="text-sm text-neutral-500">visites</span>
+        <span className="text-sm text-neutral-500">
+          {visitsLabel(program.visitsRequired)}
+        </span>
 
         {/* cf SPEC §12 : la récompense disponible doit être visible du client. */}
         {membership.rewardAvailable ? (

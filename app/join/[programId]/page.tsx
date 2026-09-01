@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
 import { getCurrentUser } from "@/lib/auth/session";
 import { JoinForm } from "@/components/customer/join-form";
+import { formatVisits } from "@/lib/format";
 
 /**
  * cf SPEC §8 — Page atteinte en scannant le QR du commerce.
@@ -63,8 +64,8 @@ export default async function JoinPage({
           Bienvenue chez {program.merchant.name}
         </h1>
         <p className="text-sm text-neutral-600">
-          {program.visitsRequired} visites et {program.rewardName.toLowerCase()}
-          . Aucune application à installer.
+          {formatVisits(program.visitsRequired)} et{" "}
+          {program.rewardName.toLowerCase()}. Aucune application à installer.
         </p>
       </div>
 

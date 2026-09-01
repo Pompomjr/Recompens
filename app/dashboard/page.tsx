@@ -3,6 +3,7 @@ import { requireMerchant } from "@/lib/auth/session";
 import { getMerchantDashboardStats } from "@/lib/dashboard/stats";
 import { StatCard } from "@/components/merchant/stat-card";
 import { NavCard } from "@/components/merchant/nav-card";
+import { formatVisits } from "@/lib/format";
 
 /**
  * Dashboard commerçant (cf SPEC §6).
@@ -66,7 +67,7 @@ export default async function DashboardPage() {
           </span>
           <span className="font-medium text-neutral-900">{program.name}</span>
           <span className="text-sm text-neutral-600">
-            {program.visitsRequired} visites → {program.rewardName}
+            {formatVisits(program.visitsRequired)} → {program.rewardName}
           </span>
         </section>
       )}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireCustomer } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
+import { visitsLabel } from "@/lib/format";
 
 /**
  * cf SPEC §16 — /customer : les cartes du client.
@@ -42,7 +43,7 @@ export default async function CustomerHomePage() {
                   </span>
                   <span className="text-sm text-neutral-500">
                     {membership.visitCount} / {membership.program.visitsRequired}{" "}
-                    visites
+                    {visitsLabel(membership.program.visitsRequired)}
                   </span>
                 </span>
                 {membership.rewardAvailable ? (

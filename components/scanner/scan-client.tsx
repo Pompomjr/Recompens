@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { QrScanner } from "./qr-scanner";
 import type { ScanResult } from "@/lib/loyalty/scan";
+import { visitsLabel } from "@/lib/format";
 
 /**
  * cf SPEC §10 (scanner), §11 (validation) et §13 (utilisation de la
@@ -274,7 +275,9 @@ function ScanResultCard({
       <span className="text-4xl font-bold tabular-nums text-neutral-900">
         {result.visitCount} / {result.visitsRequired}
       </span>
-      <span className="-mt-3 text-sm text-neutral-500">visites</span>
+      <span className="-mt-3 text-sm text-neutral-500">
+        {visitsLabel(result.visitsRequired)}
+      </span>
 
       {/* cf SPEC §12 et §13 : récompense visible du commerçant, et remise
           possible en un geste. */}
