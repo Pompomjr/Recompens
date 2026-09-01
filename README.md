@@ -353,6 +353,12 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
   il peut être partagé par capture d'écran. Le délai minimum entre deux visites
   (`LOYALTY_MIN_MINUTES_BETWEEN_VISITS`) limite le cumul d'achats sur une seule
   carte. Il ne remplace pas un vrai anti-fraude.
+- Une adresse déjà inscrite ne renvoie PAS d'erreur claire côté Supabase :
+  pour ne pas révéler qui a un compte, l'API renvoie un utilisateur avec un id
+  **fabriqué** et une liste `identities` vide. Créer une ligne métier sur cet
+  id produit un enregistrement orphelin, que plus rien ne rattache au vrai
+  compte — la connexion échoue alors définitivement. `registerMerchantAction`
+  teste donc `identities.length === 0` avant toute écriture.
 - `User.id` est **l'id Supabase Auth** : c'est la jointure utilisée par
   `getCurrentUser()`. L'inscription crée le compte Supabase puis `User` +
   `Merchant` dans une seule écriture Prisma imbriquée (donc une transaction).

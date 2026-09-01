@@ -80,6 +80,20 @@ export async function registerMerchantAction(
     };
   }
 
+  // Adresse DÉJÀ inscrite. Supabase ne le dit pas franchement — ce serait
+  // offrir à un attaquant le moyen de savoir qui a un compte — mais il le
+  // signale en renvoyant un utilisateur SANS identité, et avec un id
+  // fabriqué. Prendre cet id pour argent comptant crée une ligne métier
+  // orpheline, impossible à rattacher ensuite au vrai compte : c'est
+  // exactement ce qui bloquait la connexion.
+  if (authUser.identities?.length === 0) {
+    return {
+      status: "error",
+      message:
+        "Un compte existe déjà avec cette adresse. Connectez-vous, ou utilisez « mot de passe oublié ».",
+    };
+  }
+
   // Supabase renvoie le même utilisateur si l'email existe déjà sans être
   // confirmé : on ne recrée alors pas les lignes métier.
   const existing = await prisma.user.findUnique({ where: { id: authUser.id } });
@@ -94,7 +108,11 @@ export async function registerMerchantAction(
           merchant: { create: { name: merchantName } },
         },
       });
-    } catch {
+    } catch (error) {
+      // Sans cette trace, la vraie cause reste invisible : le message
+      // ci-dessous est écrit pour un commerçant, pas pour un développeur.
+      console.error("[register] création User + Merchant échouée:", error);
+
       return {
         status: "error",
         message:
