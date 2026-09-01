@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireMerchant } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { generateProgramJoinQr } from "@/lib/qr/generate";
+import { getAppUrl } from "@/lib/app-url";
 import { ProgramForm } from "@/components/merchant/program-form";
 
 /**
@@ -61,7 +62,7 @@ async function ProgramDetails({
     active: boolean;
   };
 }) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const appUrl = await getAppUrl();
   const joinUrl = `${appUrl}/join/${program.id}`;
   const qrDataUrl = await generateProgramJoinQr(program.id, appUrl);
 
