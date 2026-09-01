@@ -1,0 +1,196 @@
+# E-Loyalty MVP — V0.1
+
+Plateforme SaaS de cartes de fidélité digitales. Voir `SPEC.md` pour le cahier des charges complet.
+
+## État du scaffold (Étapes 01-12 terminées)
+
+- [x] Next.js 15 + TypeScript + Tailwind (App Router)
+- [x] Arborescence de fichiers (`app/`, `components/`, `lib/`, `prisma/`, `tests/`)
+- [x] Schéma Prisma complet (`prisma/schema.prisma`) — User, Merchant,
+      LoyaltyProgram, Customer, LoyaltyMembership, Transaction
+- [x] Client Prisma singleton (`lib/db/prisma.ts`)
+- [x] Clients Supabase browser/server (`lib/auth/supabase-browser.ts`, `supabase-server.ts`)
+- [x] Helpers de session/rôles (`lib/auth/session.ts`) — `requireMerchant()`,
+      `requireCustomer()`
+- [x] Logique métier centrale (`lib/loyalty/visit.ts`) — `addVisit()`,
+      `redeemReward()`, avec les contrôles de sécurité du §18 déjà en place
+- [x] Génération QR (`lib/qr/generate.ts`)
+- [x] Landing page minimale (`/`)
+
+### Étape 03 — Auth
+
+- [x] Validation des formulaires avec zod (`lib/validation/auth.ts`)
+- [x] Server Actions d'auth (`lib/auth/actions.ts`) — inscription commerçant,
+      connexion, déconnexion
+- [x] `proxy.ts` (ex-`middleware.ts`, renommé en Next 16) — rafraîchit la session Supabase à chaque requête
+      (pattern `@supabase/ssr`) et redirige tôt sur `/dashboard/*`,
+      `/customer/*`, `/admin/*`
+- [x] Pages publiques `/login` et `/register` (`app/(public)/`)
+- [x] Barrières serveur `app/dashboard/layout.tsx` (`requireMerchant()`) et
+      `app/customer/layout.tsx` (`requireCustomer()`)
+- [x] Pages placeholder `/dashboard` et `/customer` (remplacées aux étapes 04 et 06)
+
+### Étape 04 — Dashboard commerçant
+
+- [x] Statistiques serveur (`lib/dashboard/stats.ts`) — clients, visites du
+      jour, récompenses disponibles, toutes filtrées par `merchantId`
+- [x] `/dashboard` (§6) — bouton principal "SCANNER UN CLIENT", 3 tuiles de
+      stats, encart programme, navigation
+- [x] Composants (`components/merchant/`) — `StatCard`, `NavCard`,
+      `StepPlaceholder`
+- [x] Sous-pages `/dashboard/{program,customers,scan,history,settings}` en
+      placeholder, pour éviter les liens morts
+
+### Étape 05 — Programme de fidélité
+
+- [x] Validation zod (`lib/validation/program.ts`) — `visitsRequired` borné
+      entre 1 et 100 côté serveur
+- [x] Server Action (`lib/programs/actions.ts`) — `merchantId` pris dans la
+      session, jamais dans le formulaire ; un seul programme par commerce en V0.1
+- [x] `/dashboard/program` (§7) — formulaire Nom / Visites / Récompense, puis
+      fiche du programme
+- [x] QR d'inscription affiché et téléchargeable, via `generateProgramJoinQr()`
+
+### Étape 06 — Parcours client
+
+- [x] `/join/[programId]` (§8) — page publique atteinte via le QR du commerce
+- [x] Server Action (`lib/customers/actions.ts`) — session **anonyme** Supabase
+      (le §8 ne demande ni mot de passe ni confirmation), puis User + Customer
+      + carte créés dans une seule écriture imbriquée
+- [x] `/customer` — liste des cartes ; `/customer/card/[membershipId]` (§8) —
+      compteur X/Y, visites restantes, récompense (§12), bouton AFFICHER MON QR
+- [x] QR client via `generateCustomerQr()` — n'encode que `qrToken` (§9)
+- [x] Contrôle d'appartenance de la carte au client authentifié (§18)
+
+### Ajout hors SPEC — délai anti-cumul
+
+- [x] `lib/loyalty/config.ts` + contrôle dans `addVisit()` : une même carte ne
+      peut pas être créditée deux fois en moins de N minutes
+- [x] Réglable par `LOYALTY_MIN_MINUTES_BETWEEN_VISITS` dans `.env`
+      (défaut 30, `0` désactive)
+- [ ] À terme : déplacer ce réglage sur `LoyaltyProgram` pour que chaque
+      commerçant choisisse sa valeur depuis l'interface
+
+### Étape 08 — Scanner
+
+- [x] `lib/loyalty/scan.ts` — lecture seule, refait les contrôles
+      d'appartenance du §18 avant de révéler quoi que ce soit
+- [x] `POST /api/loyalty/scan` (§15) — `requireMerchant()` rappelé dans la
+      route : un layout ne protège pas un Route Handler
+- [x] `components/scanner/qr-scanner.tsx` — caméra + décodage `jsqr`
+- [x] `/dashboard/scan` (§10) — nom du client, compteur, bouton "+1 VISITE"
+      (branché à l'étape 09)
+- [x] Saisie manuelle du code, pour tester sans caméra
+- **Dépendance ajoutée** : `jsqr` (~30 Ko, Apache 2.0)
+
+### Étape 09 — Validation +1 visite
+
+- [x] `POST /api/loyalty/visit` (§15) — authentifie puis délègue à `addVisit()`,
+      sans logique métier propre : l'atomicité du §11 reste dans `lib/loyalty/visit.ts`
+- [x] Bouton "+1 VISITE" actif sur `/dashboard/scan`, désactivé pendant l'appel
+      pour qu'un double-clic ne parte pas deux fois
+- [x] Le refus du délai anti-cumul remonte tel quel au commerçant
+- [x] Vérifié : `POST /api/loyalty/{scan,visit}` sans session → HTTP 401
+      (cf SPEC §18 : "Client → appeler directement l'API de validation : Refusé.")
+
+### Étape 10 — Récompense
+
+- [x] `POST /api/loyalty/redeem` (§15) — délègue à `redeemReward()`, qui
+      revérifie `reward_available` dans la même transaction que la remise à
+      zéro : la double utilisation est impossible (§18)
+- [x] Bouton "UTILISER LA RÉCOMPENSE" sur `/dashboard/scan`, en confirmation
+      à deux temps (le geste est irréversible)
+- [x] `lib/loyalty/scan.ts` refactorisé — `findMembershipByQrToken()` et
+      `findMembershipById()` partagent les contrôles du §18
+- [x] Vérifié : `POST /api/loyalty/redeem` sans session → HTTP 401
+
+### Étape 11 — Historique
+
+- [x] `lib/transactions/queries.ts` — lecture seule de l'historique immuable ;
+      côté commerçant filtré par `merchantId`, côté client par carte
+- [x] `/dashboard/history` (§14) — date, heure, client, action, variation ;
+      liste sur mobile, tableau dès `sm:`
+- [x] Section "Mon activité" sur la carte client (§14)
+- [x] `lib/format.ts` — fuseau `Europe/Brussels` fixé explicitement, sinon un
+      serveur en UTC décale les heures affichées
+- Pas de route `/api/transactions` : les deux vues sont des Server Components
+  qui lisent directement en base (le §15 autorise l'adaptation à Next.js)
+
+### Étape 12 — Sécurité + tests
+
+- [x] `vitest` (dépendance de développement uniquement), `npm test`
+- [x] `tests/loyalty.test.ts` — 12 tests contre la vraie base, couvrant §11,
+      §13 et §18 ; chaque test crée puis supprime son propre commerce et son
+      propre client, les données de dev ne sont pas touchées
+- [x] `tests/setup.ts` — charge `.env` (vitest ne le fait pas) et fige le délai
+      anti-cumul à 30 min pour que la suite soit déterministe
+- [x] Alias `@/` reproduit dans `vitest.config.mts`, sans dépendance de plus
+- Non couverts par la suite : "client → +1 visite" et "client → appelle l'API"
+  se jouent au niveau HTTP et exigeraient un serveur lancé. **Vérifiés
+  manuellement** : `POST /api/loyalty/{scan,visit,redeem}` sans session → 401
+
+## Pour démarrer en local
+
+```bash
+npm install
+cp .env.example .env
+# Remplir DATABASE_URL, DIRECT_URL, NEXT_PUBLIC_SUPABASE_URL,
+# NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+
+npm run db:generate   # génère le client Prisma
+npm run db:push       # crée les tables sur Supabase (dev rapide)
+npm run dev
+```
+
+## Tests
+
+```bash
+npm test          # lance la suite une fois
+npm run test:watch
+```
+
+Les tests écrivent dans la base pointée par `DATABASE_URL` : à ne PAS lancer
+contre la base de production.
+
+## Configuration Supabase requise
+
+Dans le dashboard Supabase, **Authentication → Sign In / Providers** :
+
+- **Anonymous sign-ins** doit être ACTIVÉ — c'est ce qui permet au client de
+  créer sa carte avec un simple prénom, sans mot de passe (§8) ;
+
+Puis, sur le provider **Email** :
+
+- activer le provider Email/Password ;
+- si « Confirm email » est activé, l'inscription commerçant n'ouvre pas de
+  session immédiatement : le formulaire affiche alors « vérifiez votre boîte
+  mail » au lieu de rediriger vers `/dashboard`. Pour tester le flux complet
+  en local, désactiver la confirmation ;
+- **Authentication → URL Configuration** : `Site URL` = `http://localhost:3000`
+  en dev.
+
+## Prochaines étapes (Étape 13+)
+
+1. **Déploiement** — Vercel + Supabase prod.
+
+## Points d'architecture à retenir
+
+- Le compteur de visites (`visit_count`) n'est **jamais** modifié depuis le
+  client. Seul `lib/loyalty/visit.ts` y touche, après vérification serveur
+  du merchant authentifié et de l'appartenance du membership à son programme.
+- Le QR client encode uniquement `LoyaltyMembership.qrToken` (uuid opaque),
+  jamais l'id métier ni le compteur.
+- Chaque visite ou rédemption = exactement une `Transaction`, créée dans la
+  même transaction DB que la mise à jour du membership (atomicité).
+- Le QR client étant un token fixe (le QR tournant est hors périmètre V0.1),
+  il peut être partagé par capture d'écran. Le délai minimum entre deux visites
+  (`LOYALTY_MIN_MINUTES_BETWEEN_VISITS`) limite le cumul d'achats sur une seule
+  carte. Il ne remplace pas un vrai anti-fraude.
+- `User.id` est **l'id Supabase Auth** : c'est la jointure utilisée par
+  `getCurrentUser()`. L'inscription crée le compte Supabase puis `User` +
+  `Merchant` dans une seule écriture Prisma imbriquée (donc une transaction).
+- Le rôle stocké dans `user_metadata` Supabase sert **uniquement** au routage
+  du middleware (runtime Edge, pas d'accès Prisma). Il est modifiable par
+  l'utilisateur lui-même : la source de vérité reste `User.role` en base,
+  revérifié par `requireMerchant()` / `requireCustomer()` dans les layouts et
+  dans chaque route API.

@@ -1,0 +1,152 @@
+// E-Loyalty MVP — Schéma Prisma
+// Basé sur SPEC §4 (Modèle de données) et §5 (Règle fondamentale)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // Supabase: utiliser le connection pooler (port 6543) pour DATABASE_URL
+  // et la connexion directe (port 5432) pour DIRECT_URL (migrations).
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  CUSTOMER
+  MERCHANT
+  ADMIN
+}
+
+enum TransactionType {
+  VISIT
+  REWARD_REDEEMED
+}
+
+// -----------------------------------------------------------------------
+// User: compte d'authentification (lié à Supabase Auth via id partagé)
+// -----------------------------------------------------------------------
+model User {
+  id        String   @id @default(uuid())
+  // Optionnel: le parcours client du §8 n'exige qu'un prénom, l'email y est
+  // facultatif. Les clients sont authentifiés par session anonyme Supabase.
+  // (Postgres autorise plusieurs NULL sous une contrainte UNIQUE.)
+  email     String?  @unique
+  role      Role
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  merchant Merchant?
+  customer Customer?
+
+  @@map("users")
+}
+
+// -----------------------------------------------------------------------
+// Merchant: le commerçant, propriétaire d'un ou plusieurs programmes
+// -----------------------------------------------------------------------
+model Merchant {
+  id        String   @id @default(uuid())
+  ownerId   String   @unique @map("owner_id")
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name      String
+  logoUrl   String?  @map("logo_url")
+  address   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  programs     LoyaltyProgram[]
+  transactions Transaction[]
+
+  @@map("merchants")
+}
+
+// -----------------------------------------------------------------------
+// LoyaltyProgram: règles du programme de fidélité d'un commerce
+// -----------------------------------------------------------------------
+model LoyaltyProgram {
+  id             String   @id @default(uuid())
+  merchantId     String   @map("merchant_id")
+  merchant       Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  visitsRequired Int      @map("visits_required")
+  rewardName     String   @map("reward_name")
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  memberships LoyaltyMembership[]
+
+  @@map("loyalty_programs")
+}
+
+// -----------------------------------------------------------------------
+// Customer: le client final (peut avoir plusieurs memberships)
+// -----------------------------------------------------------------------
+model Customer {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName String   @map("first_name")
+  email     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  memberships LoyaltyMembership[]
+
+  @@map("customers")
+}
+
+// -----------------------------------------------------------------------
+// LoyaltyMembership: relie un client à un programme + son compteur
+// C'est CETTE table que le QR client référence (via un token opaque),
+// jamais le visit_count directement (cf SPEC §9).
+// -----------------------------------------------------------------------
+model LoyaltyMembership {
+  id              String   @id @default(uuid())
+  customerId      String   @map("customer_id")
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  programId       String   @map("program_id")
+  program         LoyaltyProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  visitCount      Int      @default(0) @map("visit_count")
+  rewardAvailable Boolean  @default(false) @map("reward_available")
+
+  // Token opaque encodé dans le QR client — jamais l'id brut ni le compteur.
+  qrToken   String   @unique @default(uuid()) @map("qr_token")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  transactions Transaction[]
+
+  // Un client ne peut avoir qu'un seul membership par programme.
+  @@unique([customerId, programId])
+  @@map("loyalty_memberships")
+}
+
+// -----------------------------------------------------------------------
+// Transaction: historique immuable, source de vérité (cf SPEC §5, §18)
+// -----------------------------------------------------------------------
+model Transaction {
+  id           String            @id @default(uuid())
+  membershipId String            @map("membership_id")
+  membership   LoyaltyMembership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  // Dénormalisé volontairement: permet de vérifier qu'un merchant n'agit
+  // que sur SES clients sans devoir remonter la chaîne à chaque requête,
+  // et de scoper l'historique commerçant efficacement (cf SPEC §18).
+  merchantId String   @map("merchant_id")
+  merchant   Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  type        TransactionType
+  visitDelta  Int             @default(0) @map("visit_delta")
+  description String?
+  createdBy   String          @map("created_by") // user.id de l'auteur (merchant)
+  createdAt   DateTime        @default(now()) @map("created_at")
+
+  @@index([membershipId])
+  @@index([merchantId])
+  @@map("transactions")
+}
