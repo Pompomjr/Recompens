@@ -195,7 +195,7 @@ export function LoyaltyCard({
           </div>
         )}
 
-        <CardQr qrDataUrl={qrDataUrl} ink={ink} onInk={onInk} />
+        <CardQr qrDataUrl={qrDataUrl} buttonBg={ink} buttonFg={onInk} />
       </div>
     </div>
   );

@@ -24,6 +24,21 @@ enum TransactionType {
   REWARD_REDEEMED
 }
 
+// Style de la carte client (cf maquettes).
+// TICKET est universel : aucun dessin propre à un métier, il convient à
+// n'importe quel commerce. VESSEL demande une silhouette adaptée au métier
+// et n'a de sens que si le contenant EST le produit qu'on vient chercher.
+enum CardStyle {
+  TICKET
+  VESSEL
+}
+
+// Silhouette qui se remplit, quand cardStyle = VESSEL.
+enum VesselShape {
+  CUP   // café
+  PASTA // restaurant
+}
+
 // -----------------------------------------------------------------------
 // User: compte d'authentification (lié à Supabase Auth via id partagé)
 // -----------------------------------------------------------------------
@@ -58,6 +73,12 @@ model Merchant {
   // tard, comme couleur de fond du pass Apple/Google Wallet. Réglée par
   // l'exploitant dans Supabase, pas par le commerçant (cf README).
   brandColor String @default("#A63A28") @map("brand_color")
+
+  // Style de carte et, le cas échéant, silhouette à remplir. Réglés par
+  // l'exploitant dans Supabase, pas par le commerçant (cf README).
+  // VESSEL sans silhouette retombe sur TICKET : jamais de carte cassée.
+  cardStyle   CardStyle    @default(TICKET) @map("card_style")
+  vesselShape VesselShape? @map("vessel_shape")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

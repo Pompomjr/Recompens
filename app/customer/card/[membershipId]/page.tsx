@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db/prisma";
 import { generateCustomerQr } from "@/lib/qr/generate";
 import { getMembershipTransactions } from "@/lib/transactions/queries";
 import { LoyaltyCard } from "@/components/customer/loyalty-card";
+import { VesselCard } from "@/components/customer/vessel-card";
 import {
   formatDate,
   formatTime,
@@ -45,6 +46,7 @@ export default async function CustomerCardPage({
   }
 
   const { program } = membership;
+  const { merchant } = program;
 
   // L'historique n'est chargé qu'après la vérification d'appartenance.
   const [qrDataUrl, transactions] = await Promise.all([
@@ -66,19 +68,36 @@ export default async function CustomerCardPage({
         ← MES CARTES
       </Link>
 
-      <LoyaltyCard
-        merchantName={program.merchant.name}
-        brandColor={program.merchant.brandColor}
-        firstName={customer.firstName}
-        cardNumber={membership.id.slice(0, 4).toUpperCase()}
-        memberSince={formatDate(membership.createdAt).slice(3)}
-        visitCount={membership.visitCount}
-        visitsRequired={program.visitsRequired}
-        rewardName={program.rewardName}
-        rewardAvailable={membership.rewardAvailable}
-        qrDataUrl={qrDataUrl}
-        justStamped={justStamped}
-      />
+      {/* Le style est un réglage du commerce. VESSEL sans silhouette
+          retombe sur TICKET : un réglage incomplet ne casse jamais la carte
+          d'un client. */}
+      {merchant.cardStyle === "VESSEL" && merchant.vesselShape ? (
+        <VesselCard
+          merchantName={merchant.name}
+          brandColor={merchant.brandColor}
+          shape={merchant.vesselShape}
+          visitCount={membership.visitCount}
+          visitsRequired={program.visitsRequired}
+          rewardName={program.rewardName}
+          rewardAvailable={membership.rewardAvailable}
+          qrDataUrl={qrDataUrl}
+          justStamped={justStamped}
+        />
+      ) : (
+        <LoyaltyCard
+          merchantName={merchant.name}
+          brandColor={merchant.brandColor}
+          firstName={customer.firstName}
+          cardNumber={membership.id.slice(0, 4).toUpperCase()}
+          memberSince={formatDate(membership.createdAt).slice(3)}
+          visitCount={membership.visitCount}
+          visitsRequired={program.visitsRequired}
+          rewardName={program.rewardName}
+          rewardAvailable={membership.rewardAvailable}
+          qrDataUrl={qrDataUrl}
+          justStamped={justStamped}
+        />
+      )}
 
       {/* cf SPEC §14 — activité du client. Lecture seule. */}
       <section className="flex flex-col gap-3">

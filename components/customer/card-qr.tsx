@@ -12,12 +12,15 @@ import { useState } from "react";
  */
 export function CardQr({
   qrDataUrl,
-  ink,
-  onInk,
+  buttonBg,
+  buttonFg,
+  rounded = false,
 }: {
   qrDataUrl: string;
-  ink: string;
-  onInk: string;
+  buttonBg: string;
+  buttonFg: string;
+  /** Le style « Contenant » veut un bouton arrondi, le « Ticket » non. */
+  rounded?: boolean;
 }) {
   const [visible, setVisible] = useState(false);
 
@@ -26,8 +29,10 @@ export function CardQr({
       <button
         type="button"
         onClick={() => setVisible(true)}
-        className="flex h-15 w-full items-center justify-center gap-2.5 font-display text-[15px] tracking-[0.09em]"
-        style={{ backgroundColor: ink, color: onInk, height: "60px" }}
+        className={`flex w-full items-center justify-center gap-2.5 font-display text-[15px] tracking-[0.09em] ${
+          rounded ? "rounded-full" : ""
+        }`}
+        style={{ backgroundColor: buttonBg, color: buttonFg, height: "62px" }}
       >
         <QrIcon />
         AFFICHER MON QR

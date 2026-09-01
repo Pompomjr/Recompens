@@ -258,12 +258,40 @@ réglage d'exploitation. Supabase → **Table Editor** → `merchants` → colon
 Un seul gabarit de carte pour tous les métiers, donc **aucun visuel à produire
 pour accueillir un nouveau commerçant**.
 
+### Deux styles de carte
+
+`Merchant.cardStyle` vaut `TICKET` (défaut) ou `VESSEL`.
+
+- **TICKET** — universel. Aucun dessin propre à un métier, il convient à
+  n'importe quel commerce. C'est le choix par défaut, et celui d'un commerce
+  dont on ne sait pas encore quoi faire.
+- **VESSEL** — le contenant du commerce se remplit. À réserver aux métiers
+  dont le contenant EST le produit : une tasse chez un café, une assiette au
+  restaurant. Chez un coiffeur, un flacon ne raconte rien — on a essayé.
+
+Quand `cardStyle = VESSEL`, `Merchant.vesselShape` choisit la silhouette
+(`CUP`, `PASTA`). Les silhouettes vivent dans `lib/loyalty/vessels.ts` :
+géométrie, couleur du contenu et garniture. Ajouter un métier = ajouter une
+entrée dans ce fichier et une valeur à l'enum.
+
+**VESSEL sans silhouette retombe sur TICKET** : un réglage incomplet ne casse
+jamais la carte d'un client.
+
+La couleur du CONTENU appartient à la silhouette, pas au commerce — des pâtes
+sont couleur pâtes. Seul le fond de la carte vient de `brandColor`.
+
 ### Mouvement
 
-Le dernier tampon s'abat sur le papier quand la carte est ouverte dans les deux
-minutes qui suivent une visite validée (`STAMP_ANIMATION_WINDOW_MS`). Il ne
-boucle pas : c'est une récompense, pas une animation d'ambiance. Le réglage
-système « réduire les animations » est respecté.
+La carte ouverte dans les deux minutes qui suivent une visite validée
+(`STAMP_ANIMATION_WINDOW_MS`) joue sa séquence, une fois :
+
+- **TICKET** — le dernier tampon s'abat sur le papier, l'encre bave.
+- **VESSEL** — le contenu monte d'un cran, le chiffre saute, et la mascotte du
+  métier traverse l'écran en diagonale avant de sortir par le coin.
+
+Aucune boucle : c'est une récompense, pas une animation d'ambiance — et un
+écran qui gigote vide la batterie. Le réglage système « réduire les
+animations » est respecté.
 
 ## Reste à faire
 
@@ -290,10 +318,8 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
 
 ### Design, suite
 
-- [ ] **Style « Contenant »** — la tasse, le verre ou le saladier qui se
-      remplit, avec la mascotte du commerce en étoile filante. Validé en
-      maquette. Demande un dessin par métier, d'où son report : le style
-      Ticket, lui, marche partout sans rien dessiner.
+- [ ] **Silhouettes supplémentaires** — saladier (sandwicherie), verre
+      (bar), flacon. `CUP` et `PASTA` sont faites.
 - [ ] **Logo du commerce** — `Merchant.logoUrl` existe mais n'est pas encore
       affiché ; la carte utilise l'initiale du nom.
 
