@@ -16,6 +16,7 @@ import { ForbiddenError } from "@/lib/auth/session";
  */
 
 const VISITS_REQUIRED = 3;
+const COOLDOWN_MINUTES = 30;
 
 type Fixture = {
   merchantId: string;
@@ -76,7 +77,7 @@ async function resetMembership() {
   });
   await prisma.loyaltyProgram.update({
     where: { id: fixture.programId },
-    data: { active: true },
+    data: { active: true, minMinutesBetweenVisits: COOLDOWN_MINUTES },
   });
 }
 
@@ -90,6 +91,7 @@ beforeAll(async () => {
       name: "Programme de test",
       visitsRequired: VISITS_REQUIRED,
       rewardName: "1 café offert",
+      minMinutesBetweenVisits: COOLDOWN_MINUTES,
     },
   });
 
@@ -270,6 +272,49 @@ describe("Délai anti-cumul entre deux visites", () => {
       where: { id: fixture.membershipId },
     });
     expect(membership!.visitCount).toBe(1);
+  });
+
+  it("est désactivé quand le programme est réglé sur 0 minute", async () => {
+    // Un commerce à forte rotation peut vouloir enchaîner les validations.
+    await prisma.loyaltyProgram.update({
+      where: { id: fixture.programId },
+      data: { minMinutesBetweenVisits: 0 },
+    });
+
+    await addVisit({
+      merchantId: fixture.merchantId,
+      qrToken: fixture.qrToken,
+      createdByUserId: fixture.ownerUserId,
+    });
+
+    const result = await addVisit({
+      merchantId: fixture.merchantId,
+      qrToken: fixture.qrToken,
+      createdByUserId: fixture.ownerUserId,
+    });
+
+    expect(result.membership.visitCount).toBe(2);
+  });
+
+  it("suit la valeur propre au programme, pas une valeur globale", async () => {
+    await prisma.loyaltyProgram.update({
+      where: { id: fixture.programId },
+      data: { minMinutesBetweenVisits: 5 },
+    });
+
+    await addVisit({
+      merchantId: fixture.merchantId,
+      qrToken: fixture.qrToken,
+      createdByUserId: fixture.ownerUserId,
+    });
+
+    await expect(
+      addVisit({
+        merchantId: fixture.merchantId,
+        qrToken: fixture.qrToken,
+        createdByUserId: fixture.ownerUserId,
+      })
+    ).rejects.toThrow(/moins de 5 minutes/);
   });
 
   it("accepte la visite suivante une fois le délai écoulé", async () => {

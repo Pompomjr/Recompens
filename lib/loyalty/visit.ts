@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
 import { ForbiddenError } from "@/lib/auth/session";
-import { MIN_MINUTES_BETWEEN_VISITS } from "./config";
 
 /**
  * cf SPEC §5 (règle fondamentale) et §11 (validation).
@@ -41,9 +40,12 @@ export async function addVisit(params: {
 
   const result = await prisma.$transaction(async (tx) => {
     // Anti-cumul: une même carte ne peut pas être créditée deux fois coup sur
-    // coup (cf lib/loyalty/config.ts pour le pourquoi et le réglage).
-    // Le contrôle est fait DANS la transaction, au plus près de l'écriture.
-    if (MIN_MINUTES_BETWEEN_VISITS > 0) {
+    // coup (cf lib/loyalty/config.ts pour le pourquoi). Le délai est propre au
+    // programme, donc au commerce. Le contrôle est fait DANS la transaction,
+    // au plus près de l'écriture.
+    const cooldownMinutes = membership.program.minMinutesBetweenVisits;
+
+    if (cooldownMinutes > 0) {
       const lastVisit = await tx.transaction.findFirst({
         where: { membershipId: membership.id, type: "VISIT" },
         orderBy: { createdAt: "desc" },
@@ -53,10 +55,10 @@ export async function addVisit(params: {
         const minutesSince =
           (Date.now() - lastVisit.createdAt.getTime()) / 60_000;
 
-        if (minutesSince < MIN_MINUTES_BETWEEN_VISITS) {
-          const wait = Math.ceil(MIN_MINUTES_BETWEEN_VISITS - minutesSince);
+        if (minutesSince < cooldownMinutes) {
+          const wait = Math.ceil(cooldownMinutes - minutesSince);
           throw new ForbiddenError(
-            `Visite déjà validée pour ce client il y a moins de ${MIN_MINUTES_BETWEEN_VISITS} minutes. Réessayez dans ${wait} min.`
+            `Visite déjà validée pour ce client il y a moins de ${cooldownMinutes} minutes. Réessayez dans ${wait} min.`
           );
         }
       }

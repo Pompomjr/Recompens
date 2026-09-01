@@ -6,12 +6,9 @@ import { resolve } from "node:path";
  *
  * 1. Charger `.env`. Next.js le fait tout seul au démarrage, vitest non, et
  *    Prisma a besoin de `DATABASE_URL`.
- * 2. Forcer le délai anti-cumul, pour que la suite donne le même résultat
- *    quelle que soit la valeur choisie en local (cf lib/loyalty/config.ts).
- *
- * Ce fichier s'exécute AVANT que les tests n'importent le code applicatif :
- * c'est ce qui permet de fixer `LOYALTY_MIN_MINUTES_BETWEEN_VISITS` avant que
- * la constante ne soit évaluée à l'import.
+ * Le délai anti-cumul, lui, n'a plus besoin d'être forcé ici : il vit
+ * désormais sur le programme (`LoyaltyProgram.minMinutesBetweenVisits`), et
+ * chaque test fixe la valeur qu'il veut éprouver.
  */
 function loadEnvFile() {
   const path = resolve(process.cwd(), ".env");
@@ -43,6 +40,3 @@ function loadEnvFile() {
 }
 
 loadEnvFile();
-
-export const TEST_COOLDOWN_MINUTES = 30;
-process.env.LOYALTY_MIN_MINUTES_BETWEEN_VISITS = String(TEST_COOLDOWN_MINUTES);

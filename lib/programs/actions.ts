@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import { requireMerchant } from "@/lib/auth/session";
 import { createProgramSchema } from "@/lib/validation/program";
+import { DEFAULT_MIN_MINUTES_BETWEEN_VISITS } from "@/lib/loyalty/config";
 import type { FormState } from "@/lib/forms/state";
 
 /**
@@ -50,6 +51,10 @@ export async function createProgramAction(
       name: parsed.data.name,
       visitsRequired: parsed.data.visitsRequired,
       rewardName: parsed.data.rewardName,
+      // Réglage d'exploitation, pas un choix du commerçant : il n'apparaît
+      // dans aucun formulaire. L'ajustement par commerce se fait à la main
+      // dans Supabase (cf lib/loyalty/config.ts).
+      minMinutesBetweenVisits: DEFAULT_MIN_MINUTES_BETWEEN_VISITS,
     },
   });
 

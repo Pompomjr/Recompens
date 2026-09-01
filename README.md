@@ -64,12 +64,26 @@ Plateforme SaaS de cartes de fidélité digitales. Voir `SPEC.md` pour le cahier
 
 ### Ajout hors SPEC — délai anti-cumul
 
-- [x] `lib/loyalty/config.ts` + contrôle dans `addVisit()` : une même carte ne
-      peut pas être créditée deux fois en moins de N minutes
-- [x] Réglable par `LOYALTY_MIN_MINUTES_BETWEEN_VISITS` dans `.env`
-      (défaut 30, `0` désactive)
-- [ ] À terme : déplacer ce réglage sur `LoyaltyProgram` pour que chaque
-      commerçant choisisse sa valeur depuis l'interface
+- [x] Contrôle dans `addVisit()` : une même carte ne peut pas être créditée
+      deux fois en moins de N minutes
+- [x] **Une valeur par commerce**, colonne
+      `LoyaltyProgram.minMinutesBetweenVisits` (défaut 30, `0` désactive)
+- [x] `LOYALTY_MIN_MINUTES_BETWEEN_VISITS` ne fixe plus que la valeur donnée
+      aux programmes NOUVELLEMENT créés
+- [ ] À terme : écran d'administration (§3 rôle ADMIN, §16 `/admin`) pour
+      régler ce délai sans passer par Supabase
+
+#### Changer le délai d'un commerce
+
+Le commerçant ne voit pas ce réglage : c'est un paramètre d'exploitation.
+Dans Supabase → **Table Editor** → table `loyalty_programs` → colonne
+`min_minutes_between_visits` → modifier la ligne du commerce concerné.
+
+Prise en compte immédiate, sans redéploiement : la valeur est lue en base à
+chaque validation de visite.
+
+Ordres de grandeur : restauration rapide 60-120, restaurant 180, coiffeur ou
+institut 1440 (une visite par jour), commerce à forte rotation 0 (désactivé).
 
 ### Étape 08 — Scanner
 

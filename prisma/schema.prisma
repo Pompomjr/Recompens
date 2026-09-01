@@ -74,6 +74,11 @@ model LoyaltyProgram {
   visitsRequired Int      @map("visits_required")
   rewardName     String   @map("reward_name")
   active         Boolean  @default(true)
+
+  // Délai minimum entre deux visites validées sur une même carte.
+  // Choisi par le commerçant: un restaurant et un coiffeur n'ont pas le même
+  // rythme de passage. 0 = désactivé. cf lib/loyalty/config.ts
+  minMinutesBetweenVisits Int @default(30) @map("min_minutes_between_visits")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
