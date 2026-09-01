@@ -169,9 +169,48 @@ Puis, sur le provider **Email** :
 - **Authentication → URL Configuration** : `Site URL` = `http://localhost:3000`
   en dev.
 
-## Prochaines étapes (Étape 13+)
+## Déploiement (Vercel + Supabase)
 
-1. **Déploiement** — Vercel + Supabase prod.
+Deux projets Supabase distincts : un pour le développement, un pour la
+production. `npm test` écrit dans la base pointée par `DATABASE_URL` — le
+faire tourner contre la prod créerait et supprimerait des données chez de
+vrais commerçants.
+
+### Réglages à faire dans le projet Supabase de production
+
+- **Authentication → Sign In / Providers → Anonymous sign-ins** : activé.
+  Sans lui, le §8 ne fonctionne pas : aucun client ne peut créer sa carte.
+- **Email → Confirm email** : activé en production (désactivé en dev pour
+  aller vite). Le commerçant confirme son adresse, puis se connecte.
+- **Authentication → URL Configuration → Site URL** : l'URL de production.
+  C'est la cible des liens de confirmation par mail ; laissée sur
+  `localhost:3000`, elle rend ces liens inutilisables.
+
+### Variables d'environnement Vercel
+
+| Variable | Remarque |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | projet de PROD |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | projet de PROD |
+| `SUPABASE_SERVICE_ROLE_KEY` | projet de PROD |
+| `DATABASE_URL` | pooler, port 6543, `?pgbouncer=true` |
+| `DIRECT_URL` | connexion directe, port 5432 |
+| `NEXT_PUBLIC_APP_URL` | l'URL de production — encodée dans le QR d'inscription |
+| `LOYALTY_MIN_MINUTES_BETWEEN_VISITS` | `30` en production |
+
+`NEXT_PUBLIC_APP_URL` est inlinée au build : la modifier exige un
+redéploiement, pas seulement un redémarrage.
+
+### Créer les tables de production
+
+Les identifiants de prod vivent dans `.env.production.local` (ignoré par git).
+Charger ce fichier dans l'environnement, puis `npx prisma db push`.
+
+### Déclencher un déploiement
+
+Vercel ne déploie en production que sur un push vers la branche par défaut du
+dépôt. Un dépôt poussé AVANT la connexion à Vercel ne déclenche rien : il faut
+un nouveau commit.
 
 ## Points d'architecture à retenir
 
