@@ -58,7 +58,9 @@ export function VesselCard({
       className="relative flex w-full flex-col gap-7 overflow-hidden rounded-3xl px-6 pb-7 pt-6"
       style={{ backgroundColor: ink, color: onInk }}
     >
-      {justStamped ? <Mascot shape={shape} color={spec.fill} /> : null}
+      {justStamped && spec.gesture === "streak" ? (
+        <StreakMascot shape={shape} color={spec.fill} />
+      ) : null}
 
       <header className="relative flex items-center gap-3">
         <span
@@ -122,6 +124,21 @@ export function VesselCard({
                     ry={spec.surface.ry}
                     fill={spec.fillLight}
                   />
+                  {justStamped && spec.gesture === "drop" ? (
+                    <ellipse
+                      className="onde-surface"
+                      cx={spec.surface.cx}
+                      cy={spec.interiorTop + 2}
+                      rx={spec.surface.rx * 0.7}
+                      ry={spec.surface.ry * 0.8}
+                      fill="none"
+                      stroke="#FFF6E4"
+                      strokeWidth={4}
+                      style={{
+                        transformOrigin: `${spec.surface.cx}px ${spec.interiorTop + 2}px`,
+                      }}
+                    />
+                  ) : null}
                   {spec.garnish.map((d, index) => (
                     <path
                       key={index}
@@ -149,6 +166,10 @@ export function VesselCard({
               />
             ))}
           </svg>
+
+          {justStamped && spec.gesture === "drop" ? (
+            <DropZone shape={shape} spec={spec} />
+          ) : null}
 
           <div
             className="absolute inset-x-0 flex flex-col items-center"
@@ -210,60 +231,90 @@ export function VesselCard({
 }
 
 /**
- * La mascotte du métier, qui traverse l'écran une fois et sort par le coin.
- * Une icône par silhouette : c'est tout le coût d'un nouveau commerce.
+ * Geste « drop » : la mascotte tombe dans le contenant.
+ *
+ * La zone est découpée et s'arrête à l'ouverture (`rimY`) : la mascotte ne
+ * peut donc PAS être dessinée plus bas, quoi qu'il arrive. Sans ce découpage,
+ * elle a l'air de passer devant le contenant au lieu d'y entrer.
  */
-function Mascot({ shape, color }: { shape: VesselShape; color: string }) {
+const FALL_HEIGHT = 140;
+
+function DropZone({
+  shape,
+  spec,
+}: {
+  shape: VesselShape;
+  spec: { rimY: number; fill: string };
+}) {
+  const fall = FALL_HEIGHT + spec.rimY;
+
+  return (
+    <div
+      className="pointer-events-none absolute inset-x-0 overflow-hidden"
+      style={{ top: -FALL_HEIGHT, height: fall }}
+      aria-hidden
+    >
+      <div
+        className="mascotte-tombe absolute left-[38%] top-[-18px] size-8"
+        style={{ "--fall": `${fall}px` } as React.CSSProperties}
+      >
+        <MascotIcon shape={shape} color={spec.fill} size={32} />
+      </div>
+      <div
+        className="mascotte-tombe-2 absolute left-[54%] top-[-14px] size-6"
+        style={{ "--fall": `${fall}px` } as React.CSSProperties}
+      >
+        <MascotIcon shape={shape} color={spec.fill} size={24} />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Geste « streak » : la mascotte traverse l'écran une fois et sort par le
+ * coin. Une icône par silhouette : c'est tout le coût d'un nouveau commerce.
+ */
+function StreakMascot({ shape, color }: { shape: VesselShape; color: string }) {
   return (
     <div
       className="mascotte-file pointer-events-none absolute -left-16 top-[900px] z-10 size-12"
       aria-hidden
     >
-      {shape === "PASTA" ? (
-        <div className="mascotte-roule flex size-12 items-center justify-center">
-          <svg width="46" height="46" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="14" r="7.4" fill="#E24E3B" />
-            <path
-              d="M12 6c-1.6-2.1-4.2-2.6-5.8-1"
-              stroke="#7FB069"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M12 6c1.6-2.1 4.2-2.6 5.8-1"
-              stroke="#7FB069"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M12 5.4v2.2"
-              stroke="#7FB069"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-      ) : (
-        <div className="flex size-12 items-center justify-center">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-            <ellipse
-              cx="12"
-              cy="12"
-              rx="7.5"
-              ry="10"
-              fill="#6B4423"
-              stroke={color}
-              strokeWidth="1.6"
-            />
-            <path
-              d="M12 3.5c-2.4 3.6-2.4 13.4 0 17"
-              stroke={color}
-              strokeWidth="1.6"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-      )}
+      <MascotIcon shape={shape} color={color} size={46} />
+    </div>
+  );
+}
+
+/** L'icône du métier, seule chose qui change d'un commerce à l'autre. */
+function MascotIcon({
+  shape,
+  color,
+  size,
+}: {
+  shape: VesselShape;
+  color: string;
+  size: number;
+}) {
+  if (shape === "PASTA") {
+    return (
+      <div className="mascotte-roule flex size-full items-center justify-center">
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="14" r="7.4" fill="#E24E3B" />
+          <path d="M12 6c-1.6-2.1-4.2-2.6-5.8-1" stroke="#7FB069" strokeWidth="2.2" strokeLinecap="round" />
+          <path d="M12 6c1.6-2.1 4.2-2.6 5.8-1" stroke="#7FB069" strokeWidth="2.2" strokeLinecap="round" />
+          <path d="M12 5.4v2.2" stroke="#7FB069" strokeWidth="2.2" strokeLinecap="round" />
+        </svg>
+      </div>
+    );
+  }
+
+  // CUP : un grain de café.
+  return (
+    <div className="flex size-full items-center justify-center">
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <ellipse cx="12" cy="12" rx="7.5" ry="10" fill="#6B4423" stroke={color} strokeWidth="1.7" />
+        <path d="M12 3.5c-2.4 3.6-2.4 13.4 0 17" stroke={color} strokeWidth="1.7" strokeLinecap="round" />
+      </svg>
     </div>
   );
 }

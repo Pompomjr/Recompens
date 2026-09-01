@@ -200,3 +200,65 @@ body {
     animation: none;
   }
 }
+
+/*
+ * Geste « drop » — la mascotte tombe DANS le contenant.
+ *
+ * Elle n'est jamais dessinée sous l'ouverture : sa zone de chute est découpée
+ * et s'arrête au bord. Elle s'efface en y arrivant, et c'est l'onde à la
+ * surface qui prend le relais. Sans ce découpage, l'objet a l'air de passer
+ * devant le contenant au lieu d'y entrer.
+ */
+@keyframes mascotte-tombe {
+  0% {
+    opacity: 0;
+    transform: translateY(0) rotate(-32deg);
+  }
+  14% {
+    opacity: 1;
+    transform: translateY(26px) rotate(-16deg);
+  }
+  76% {
+    opacity: 1;
+    transform: translateY(var(--fall, 150px)) rotate(24deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(calc(var(--fall, 150px) + 22px)) rotate(32deg);
+  }
+}
+
+@keyframes onde-surface {
+  0% {
+    opacity: 0;
+    transform: scale(0.25);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+.mascotte-tombe {
+  animation: mascotte-tombe 1100ms cubic-bezier(0.45, 0, 0.9, 0.55) both;
+}
+
+.mascotte-tombe-2 {
+  animation: mascotte-tombe 1100ms cubic-bezier(0.45, 0, 0.9, 0.55) 180ms both;
+}
+
+.onde-surface {
+  animation: onde-surface 900ms ease-out 1000ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascotte-tombe,
+  .mascotte-tombe-2,
+  .onde-surface {
+    animation: none;
+  }
+}

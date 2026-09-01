@@ -286,8 +286,15 @@ La carte ouverte dans les deux minutes qui suivent une visite validée
 (`STAMP_ANIMATION_WINDOW_MS`) joue sa séquence, une fois :
 
 - **TICKET** — le dernier tampon s'abat sur le papier, l'encre bave.
-- **VESSEL** — le contenu monte d'un cran, le chiffre saute, et la mascotte du
-  métier traverse l'écran en diagonale avant de sortir par le coin.
+- **VESSEL** — le contenu monte d'un cran et le chiffre saute. Le geste de la
+  mascotte dépend de la silhouette (`gesture` dans `lib/loyalty/vessels.ts`) :
+  - `drop` — elle TOMBE dans le contenant. Le geste le plus fort, mais il
+    suppose un contenant ouvert par le haut et un objet crédible : un grain
+    de café dans une tasse. Sa zone de chute est découpée et s'arrête à
+    l'ouverture, sinon elle a l'air de passer devant le contenant.
+  - `streak` — elle TRAVERSE l'écran et sort par le coin. Marche partout,
+    y compris quand rien ne tombe naturellement dans le contenant : rien ne
+    tombe dans une assiette de pâtes.
 
 Aucune boucle : c'est une récompense, pas une animation d'ambiance — et un
 écran qui gigote vide la batterie. Le réglage système « réduire les

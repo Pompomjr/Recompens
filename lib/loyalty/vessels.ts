@@ -19,6 +19,19 @@ import type { VesselShape } from "@prisma/client";
 export type VesselSpec = {
   width: number;
   height: number;
+  /**
+   * Le geste joué après une visite validée.
+   *
+   * - `drop` : la mascotte TOMBE dans le contenant. Le geste le plus fort,
+   *   mais il exige que le contenant soit ouvert par le haut et que l'objet
+   *   qui tombe soit crédible — un grain dans une tasse.
+   * - `streak` : la mascotte TRAVERSE l'écran et sort par le coin. Marche
+   *   partout, y compris quand rien ne « tombe » naturellement dans le
+   *   contenant.
+   */
+  gesture: "drop" | "streak";
+  /** Hauteur de l'ouverture, où la mascotte disparaît quand elle tombe. */
+  rimY: number;
   /** Intérieur du contenant, sert de masque au contenu. */
   clip: string;
   /** Traits du contenant, dessinés par-dessus le contenu. */
@@ -41,6 +54,8 @@ export type VesselSpec = {
 const CUP: VesselSpec = {
   width: 186,
   height: 236,
+  gesture: "drop",
+  rimY: 34,
   clip: "M30 34 h112 l-13 148 a26 26 0 0 1 -26 24 h-34 a26 26 0 0 1 -26 -24 Z",
   strokes: [
     "M142 62 h14 a30 30 0 0 1 0 60 h-19",
@@ -60,6 +75,9 @@ const CUP: VesselSpec = {
 const PASTA: VesselSpec = {
   width: 220,
   height: 190,
+  // Rien ne « tombe » dans une assiette de pâtes : la tomate traverse.
+  gesture: "streak",
+  rimY: 62,
   clip: "M24 62 h172 l-17 78 a36 36 0 0 1 -35 28 h-68 a36 36 0 0 1 -35 -28 Z",
   strokes: [
     "M24 62 h172 l-17 78 a36 36 0 0 1 -35 28 h-68 a36 36 0 0 1 -35 -28 Z",
