@@ -38,7 +38,7 @@ export default async function DashboardLayout({
   return (
     <div className="flex min-h-full flex-1 flex-col">
       <header className="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
-        <span className="font-semibold text-neutral-900">{merchantName}</span>
+        <span className="font-display text-[15px] tracking-tight text-neutral-900">{merchantName}</span>
         <LogoutButton />
       </header>
       <div className="flex flex-1 flex-col">{children}</div>

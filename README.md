@@ -226,6 +226,87 @@ Vercel ne déploie en production que sur un push vers la branche par défaut du
 dépôt. Un dépôt poussé AVANT la connexion à Vercel ne déclenche rien : il faut
 un nouveau commit.
 
+## Design
+
+Deux univers volontairement distincts (cf SPEC §17) :
+
+- **Côté client** — du papier. La carte est un *ticket* : fond crème grainé,
+  perforation, numéro de série, tampons posés de travers. Elle doit ressembler
+  à un objet qu'on possède, lisible à un mètre dans une boutique très éclairée.
+- **Côté commerçant** — du noir et blanc. Il travaille avec, en vitesse,
+  derrière un comptoir. Grosses cibles tactiles, aucune fantaisie.
+
+### Typographie
+
+Chargée par `next/font` dans `app/layout.tsx` : **Archivo Black** (titres et
+grands chiffres), **Instrument Sans** (texte), **IBM Plex Mono** (numéros de
+carte et libellés du ticket). Avant ça, `globals.css` référençait une variable
+`--font-geist-sans` que rien ne chargeait : l'app s'affichait en Arial.
+
+### Couleur par commerce
+
+Une seule valeur en base, `Merchant.brandColor` (hex, défaut `#A63A28`), suffit
+à décliner la carte : encre des tampons, bouton, accents. Le papier et le texte
+ne changent pas — c'est ce qui donne une famille reconnaissable plutôt qu'un
+patchwork. `lib/theme.ts` en dérive une couleur de texte lisible, pour qu'un
+commerçant qui choisit un jaune vif n'obtienne pas un bouton illisible.
+
+Le commerçant ne choisit pas sa couleur : comme le délai anti-cumul, c'est un
+réglage d'exploitation. Supabase → **Table Editor** → `merchants` → colonne
+`brand_color`. Effet immédiat, sans redéploiement.
+
+Un seul gabarit de carte pour tous les métiers, donc **aucun visuel à produire
+pour accueillir un nouveau commerçant**.
+
+### Mouvement
+
+Le dernier tampon s'abat sur le papier quand la carte est ouverte dans les deux
+minutes qui suivent une visite validée (`STAMP_ANIMATION_WINDOW_MS`). Il ne
+boucle pas : c'est une récompense, pas une animation d'ambiance. Le réglage
+système « réduire les animations » est respecté.
+
+## Reste à faire
+
+Par ordre d'importance, hors périmètre V0.1 déjà livré.
+
+### Bloquant pour un usage réel
+
+- [ ] **Modifier un programme après création.** Aujourd'hui un commerçant qui
+      se trompe de récompense ou de nombre de visites est coincé : ni édition
+      ni suppression. C'est la limite la plus gênante du MVP.
+- [ ] **Envoi des mails.** Le service intégré de Supabase est limité à
+      quelques mails par heure et part en indésirables. Il faut un SMTP
+      externe (Resend si domaine, Brevo sinon). Dépend du choix du nom.
+      En attendant : confirmer les comptes à la main dans Supabase →
+      Authentication → Users → ⋯ → Confirm email.
+
+### Décisions produit en attente
+
+- [ ] **Nom et domaine.** Conditionne l'envoi des mails, l'identité visuelle
+      et l'URL des QR. `fidelizz.com` et `fidelizz.fr` sont déjà pris.
+- [ ] **Cumul des récompenses.** Les visites au-delà du seuil ne sont pas
+      capitalisées aujourd'hui, et une seule récompense est en attente à la
+      fois. À trancher avec un vrai commerçant.
+
+### Design, suite
+
+- [ ] **Style « Contenant »** — la tasse, le verre ou le saladier qui se
+      remplit, avec la mascotte du commerce en étoile filante. Validé en
+      maquette. Demande un dessin par métier, d'où son report : le style
+      Ticket, lui, marche partout sans rien dessiner.
+- [ ] **Logo du commerce** — `Merchant.logoUrl` existe mais n'est pas encore
+      affiché ; la carte utilise l'initiale du nom.
+
+### Améliorations identifiées
+
+- [ ] **Écran d'administration** (§3 rôle ADMIN, §16 `/admin`) — réglerait
+      notamment le délai anti-cumul sans passer par le Table Editor.
+- [ ] **Récupération d'une carte perdue.** L'identité client tient à un
+      cookie : changement de téléphone ou cookies effacés = carte perdue.
+      L'email optionnel est le crochet prévu pour un lien de récupération.
+- [ ] **Écran Paramètres** du commerce (nom, logo, adresse).
+- [ ] **Liste des clients** (`/dashboard/customers`), encore en placeholder.
+
 ## Points d'architecture à retenir
 
 - Le compteur de visites (`visit_count`) n'est **jamais** modifié depuis le

@@ -268,11 +268,11 @@ function ScanResultCard({
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-6 text-center">
-      <span className="text-xl font-semibold text-neutral-900">
+      <span className="font-display text-2xl tracking-tight text-neutral-900">
         {result.firstName}
       </span>
 
-      <span className="text-4xl font-bold tabular-nums text-neutral-900">
+      <span className="font-display text-[52px] leading-none tabular-nums text-neutral-900">
         {result.visitCount} / {result.visitsRequired}
       </span>
       <span className="-mt-3 text-sm text-neutral-500">
@@ -292,7 +292,7 @@ function ScanResultCard({
               type="button"
               onClick={() => setConfirming(true)}
               disabled={busy}
-              className="rounded-xl bg-amber-600 px-6 py-4 text-lg font-semibold text-white disabled:opacity-50"
+              className="rounded-xl bg-amber-600 px-6 py-5 font-display text-lg tracking-[0.04em] text-white disabled:opacity-50"
             >
               UTILISER LA RÉCOMPENSE
             </button>
@@ -329,7 +329,7 @@ function ScanResultCard({
         type="button"
         onClick={onValidate}
         disabled={busy}
-        className={`rounded-xl px-6 py-4 text-lg font-semibold disabled:opacity-50 ${
+        className={`rounded-xl px-6 py-5 font-display text-xl tracking-[0.04em] disabled:opacity-50 ${
           result.rewardAvailable
             ? "border border-neutral-300 bg-white text-neutral-900"
             : "bg-neutral-900 text-white"

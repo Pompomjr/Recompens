@@ -57,3 +57,16 @@ export function formatVisits(count: number) {
 export function visitsLabel(count: number) {
   return count > 1 ? "visites" : "visite";
 }
+
+/**
+ * Vrai si l'horodatage est plus récent que `windowMs`.
+ *
+ * Isolé ici volontairement : `Date.now()` appelé directement dans un
+ * composant est signalé par la règle de pureté de React, à juste titre pour
+ * un composant client qui peut se rendre plusieurs fois. Nos pages carte sont
+ * des Server Components rendus une fois par requête, mais autant garder
+ * l'impureté à un seul endroit, nommé et testable.
+ */
+export function isWithin(date: Date, windowMs: number): boolean {
+  return Date.now() - date.getTime() < windowMs;
+}

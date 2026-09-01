@@ -26,7 +26,7 @@ export default async function DashboardPage() {
       {/* cf SPEC §6 : "Le bouton SCANNER UN CLIENT doit être l'action principale." */}
       <Link
         href="/dashboard/scan"
-        className="flex items-center justify-center rounded-2xl bg-neutral-900 px-6 py-6 text-lg font-semibold text-white shadow-sm active:bg-neutral-800"
+        className="flex items-center justify-center rounded-2xl bg-neutral-900 px-6 py-7 font-display text-xl tracking-[0.04em] text-white shadow-sm active:bg-neutral-800"
       >
         SCANNER UN CLIENT
       </Link>
@@ -45,7 +45,7 @@ export default async function DashboardPage() {
           n'ont rien à quoi se rattacher : on met la création en avant. */}
       {!program ? (
         <section className="flex flex-col gap-3 rounded-xl border border-neutral-900 bg-neutral-50 p-5">
-          <h2 className="font-semibold text-neutral-900">
+          <h2 className="font-display text-lg tracking-tight text-neutral-900">
             Créez votre programme de fidélité
           </h2>
           <p className="text-sm text-neutral-600">
@@ -62,10 +62,10 @@ export default async function DashboardPage() {
         </section>
       ) : (
         <section className="flex flex-col gap-1 rounded-xl border border-neutral-200 bg-white p-4">
-          <span className="text-xs font-medium text-neutral-500">
+          <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-neutral-500">
             Programme actif
           </span>
-          <span className="font-medium text-neutral-900">{program.name}</span>
+          <span className="font-display text-base tracking-tight text-neutral-900">{program.name}</span>
           <span className="text-sm text-neutral-600">
             {formatVisits(program.visitsRequired)} → {program.rewardName}
           </span>

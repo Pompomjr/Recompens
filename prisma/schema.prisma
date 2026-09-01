@@ -53,6 +53,11 @@ model Merchant {
   name      String
   logoUrl   String?  @map("logo_url")
   address   String?
+
+  // Couleur du commerce, utilisée comme encre de la carte client et, plus
+  // tard, comme couleur de fond du pass Apple/Google Wallet. Réglée par
+  // l'exploitant dans Supabase, pas par le commerçant (cf README).
+  brandColor String @default("#A63A28") @map("brand_color")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

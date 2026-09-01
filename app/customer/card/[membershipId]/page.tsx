@@ -4,19 +4,20 @@ import { requireCustomer } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { generateCustomerQr } from "@/lib/qr/generate";
 import { getMembershipTransactions } from "@/lib/transactions/queries";
-import { CardQr } from "@/components/customer/card-qr";
+import { LoyaltyCard } from "@/components/customer/loyalty-card";
 import {
   formatDate,
   formatTime,
   formatTransactionType,
   formatVisitDelta,
-  visitsLabel,
+  isWithin,
 } from "@/lib/format";
 
+/** Une visite validée dans les deux dernières minutes anime le dernier tampon. */
+const STAMP_ANIMATION_WINDOW_MS = 2 * 60 * 1000;
+
 /**
- * cf SPEC §8 — la carte de fidélité du client :
- *   [Commerce] / X sur Y visites / Encore Z visites / [AFFICHER MON QR]
- * et §14 — "Le client doit pouvoir voir son activité."
+ * cf SPEC §8 — la carte de fidélité du client, et §14 — son activité.
  *
  * Sécurité (cf SPEC §18) : la carte est retrouvée par son id d'URL, mais on
  * vérifie ensuite qu'elle appartient bien au client authentifié. Sans ce
@@ -44,80 +45,68 @@ export default async function CustomerCardPage({
   }
 
   const { program } = membership;
-  const remaining = Math.max(program.visitsRequired - membership.visitCount, 0);
 
-  // L'historique n'est chargé qu'après la vérification d'appartenance
-  // ci-dessus : jamais avant.
+  // L'historique n'est chargé qu'après la vérification d'appartenance.
   const [qrDataUrl, transactions] = await Promise.all([
     generateCustomerQr(membership.qrToken),
     getMembershipTransactions(membership.id),
   ]);
 
+  const lastVisit = transactions.find((t) => t.type === "VISIT");
+  const justStamped =
+    lastVisit !== undefined &&
+    isWithin(lastVisit.createdAt, STAMP_ANIMATION_WINDOW_MS);
+
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col gap-6 p-5">
-      <Link href="/customer" className="text-sm text-neutral-500 underline">
-        ← Mes cartes
+      <Link
+        href="/customer"
+        className="font-mono text-[11px] tracking-[0.16em] text-paper/50 underline"
+      >
+        ← MES CARTES
       </Link>
 
-      <section className="flex flex-col items-center gap-2 rounded-2xl border border-neutral-200 bg-white p-6 text-center">
-        <span className="text-lg font-semibold text-neutral-900">
-          {program.merchant.name}
-        </span>
-
-        <span className="text-4xl font-bold tabular-nums text-neutral-900">
-          {membership.visitCount} / {program.visitsRequired}
-        </span>
-        <span className="text-sm text-neutral-500">
-          {visitsLabel(program.visitsRequired)}
-        </span>
-
-        {/* cf SPEC §12 : la récompense disponible doit être visible du client. */}
-        {membership.rewardAvailable ? (
-          <p className="mt-2 rounded-lg bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
-            Récompense disponible : {program.rewardName}. Présentez votre QR au
-            commerçant.
-          </p>
-        ) : (
-          <p className="mt-2 text-sm text-neutral-600">
-            Encore {remaining} {remaining > 1 ? "visites" : "visite"} pour
-            obtenir {program.rewardName.toLowerCase()}.
-          </p>
-        )}
-      </section>
-
-      <CardQr qrDataUrl={qrDataUrl} />
+      <LoyaltyCard
+        merchantName={program.merchant.name}
+        brandColor={program.merchant.brandColor}
+        firstName={customer.firstName}
+        cardNumber={membership.id.slice(0, 4).toUpperCase()}
+        memberSince={formatDate(membership.createdAt).slice(3)}
+        visitCount={membership.visitCount}
+        visitsRequired={program.visitsRequired}
+        rewardName={program.rewardName}
+        rewardAvailable={membership.rewardAvailable}
+        qrDataUrl={qrDataUrl}
+        justStamped={justStamped}
+      />
 
       {/* cf SPEC §14 — activité du client. Lecture seule. */}
       <section className="flex flex-col gap-3">
-        <h2 className="font-semibold text-neutral-900">Mon activité</h2>
+        <h2 className="font-mono text-[11px] font-semibold tracking-[0.16em] text-paper/45">
+          MON ACTIVITÉ
+        </h2>
 
         {transactions.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-neutral-300 p-4 text-sm text-neutral-500">
+          <p className="border border-dashed border-paper/20 p-4 text-sm text-paper/45">
             Votre première visite apparaîtra ici.
           </p>
         ) : (
-          <ul className="flex flex-col gap-2">
+          <ul className="flex flex-col gap-px overflow-hidden">
             {transactions.map((transaction) => (
               <li
                 key={transaction.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white p-3"
+                className="flex items-center justify-between gap-3 bg-paper/5 px-4 py-3"
               >
                 <span className="flex flex-col gap-0.5">
-                  <span className="text-sm font-medium text-neutral-900">
+                  <span className="text-sm font-medium text-paper">
                     {formatTransactionType(transaction.type)}
                   </span>
-                  <span className="text-xs text-neutral-400">
-                    {formatDate(transaction.createdAt)} à{" "}
+                  <span className="font-mono text-[11px] tracking-wide text-paper/40">
+                    {formatDate(transaction.createdAt)} —{" "}
                     {formatTime(transaction.createdAt)}
                   </span>
                 </span>
-                <span
-                  className={`text-base font-semibold tabular-nums ${
-                    transaction.visitDelta > 0
-                      ? "text-neutral-900"
-                      : "text-amber-700"
-                  }`}
-                >
+                <span className="font-display text-base text-paper/80">
                   {formatVisitDelta(transaction.visitDelta)}
                 </span>
               </li>

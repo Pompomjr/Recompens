@@ -14,20 +14,22 @@ export function StatCard({
 }) {
   return (
     <div
-      className={`flex flex-col gap-1 rounded-xl border p-4 ${
+      className={`flex flex-col gap-2 rounded-xl border p-4 ${
         highlight
           ? "border-amber-300 bg-amber-50"
           : "border-neutral-200 bg-white"
       }`}
     >
       <span
-        className={`text-2xl font-bold tabular-nums ${
+        className={`font-display text-[28px] leading-none tabular-nums ${
           highlight ? "text-amber-700" : "text-neutral-900"
         }`}
       >
         {value}
       </span>
-      <span className="text-xs font-medium text-neutral-500">{label}</span>
+      <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-neutral-500">
+        {label}
+      </span>
     </div>
   );
 }
