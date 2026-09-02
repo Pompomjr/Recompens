@@ -214,6 +214,7 @@ export function ScanClient() {
           onRedeem={redeem}
           busy={busy}
           onReset={reset}
+          dejaAgi={confirmation !== null}
         />
       ) : null}
     </div>
@@ -255,12 +256,19 @@ function ScanResultCard({
   onRedeem,
   busy,
   onReset,
+  dejaAgi,
 }: {
   result: ScanResult;
   onValidate: () => void;
   onRedeem: () => void;
   busy: boolean;
   onReset: () => void;
+  /**
+   * Vrai dès qu'une visite a été validée ou une récompense remise pour ce
+   * client. La hiérarchie des boutons s'inverse alors : l'action suivante
+   * n'est plus « +1 visite », c'est « client suivant ».
+   */
+  dejaAgi: boolean;
 }) {
   // Confirmation en deux temps: remettre une récompense est irréversible,
   // un geste malheureux offre un cadeau.
@@ -325,13 +333,17 @@ function ScanResultCard({
         </div>
       ) : null}
 
+      {/* Hiérarchie inversée une fois la visite validée : le geste suivant du
+          commerçant n'est plus de compter, c'est de prendre le client d'après.
+          Laisser « +1 VISITE » en vert invitait à valider deux fois — le délai
+          anti-cumul le refuserait, mais le commerçant, lui, aurait douté. */}
       <button
         type="button"
         onClick={onValidate}
         disabled={busy}
         className="rounded-xl px-6 py-5 font-display text-xl tracking-[0.04em] disabled:opacity-50"
         style={
-          result.rewardAvailable
+          result.rewardAvailable || dejaAgi
             ? { border: "1px solid var(--line)", color: "var(--fg)" }
             : { backgroundColor: "#2FBF71", color: "#10331F" }
         }
@@ -339,13 +351,24 @@ function ScanResultCard({
         {busy ? "…" : "+1 VISITE"}
       </button>
 
-      <button
-        type="button"
-        onClick={onReset}
-        className="text-sm text-fg-faint underline"
-      >
-        Scanner un autre client
-      </button>
+      {dejaAgi ? (
+        <button
+          type="button"
+          onClick={onReset}
+          className="rounded-xl px-6 py-5 font-display text-xl tracking-[0.04em]"
+          style={{ backgroundColor: "#2FBF71", color: "#10331F" }}
+        >
+          CLIENT SUIVANT
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onReset}
+          className="text-sm text-fg-faint underline"
+        >
+          Scanner un autre client
+        </button>
+      )}
     </div>
   );
 }
