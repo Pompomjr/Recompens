@@ -112,7 +112,7 @@ change quand la règle change.
 - [ ] **Confirmer le mot de passe à l'inscription** — il n'est saisi qu'une fois ; une faute de frappe crée un compte inaccessible.
 - [ ] **Écran d'administration** — pour régler style et délai sans passer par Supabase.
 - [ ] **Liste des clients** dans le dashboard — encore un écran vide.
-- [ ] **Logo du commerçant** — le champ existe, il n'est pas affiché.
+- [ ] **Nom et adresse modifiables** dans Paramètres — seul le logo l'est aujourd'hui.
 - [ ] **Traduire les erreurs d'authentification** — certaines remontent en anglais.
 
 ---

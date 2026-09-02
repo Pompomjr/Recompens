@@ -392,8 +392,8 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
 
 - [ ] **Silhouettes supplémentaires** — saladier (sandwicherie), verre
       (bar), flacon. `CUP` et `PASTA` sont faites.
-- [ ] **Logo du commerce** — `Merchant.logoUrl` existe mais n'est pas encore
-      affiché ; la carte utilise l'initiale du nom.
+- [ ] **Nom et adresse du commerce** modifiables depuis l'écran Paramètres.
+      Seul le logo y est réglable aujourd'hui.
 
 ### Améliorations identifiées
 
@@ -417,7 +417,6 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
 - [ ] **Récupération d'une carte perdue.** L'identité client tient à un
       cookie : changement de téléphone ou cookies effacés = carte perdue.
       L'email optionnel est le crochet prévu pour un lien de récupération.
-- [ ] **Écran Paramètres** du commerce (nom, logo, adresse).
 - [ ] **Liste des clients** (`/dashboard/customers`), encore en placeholder.
 
 ## Points d'architecture à retenir

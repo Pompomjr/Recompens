@@ -6,6 +6,7 @@
  */
 export type FormState =
   | { status: "idle" }
-  | { status: "error"; message: string };
+  | { status: "error"; message: string }
+  | { status: "success"; message: string };
 
 export const initialFormState: FormState = { status: "idle" };
