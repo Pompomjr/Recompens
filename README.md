@@ -300,6 +300,28 @@ Aucune boucle : c'est une récompense, pas une animation d'ambiance — et un
 écran qui gigote vide la batterie. Le réglage système « réduire les
 animations » est respecté.
 
+## Emails transactionnels
+
+Envoyés par **Resend**, branché en SMTP personnalisé sur Supabase
+(Project Settings → Authentication → SMTP Settings) :
+
+```
+Host      smtp.resend.com
+Port      587
+Username  resend          ← en minuscules, la casse compte
+Sender    contact@recompens.com
+```
+
+Le domaine `recompens.com` est vérifié chez Resend. Ses enregistrements DNS
+vivent chez OVH et **ne touchent pas le SPF racine** : Resend passe par les
+sous-domaines `send` et `rsend`, ce qui laisse la boîte OVH intacte.
+
+Score mail-tester : **9,6/10**, authentification SPF + DKIM + DMARC complète.
+
+Les modèles de messages sont versionnés dans `emails/`. Ils ne sont pas lus
+par l'application : il faut les **coller dans Supabase** → Authentication →
+Emails. Les garder ici évite qu'ils n'existent que dans un tableau de bord.
+
 ## Reste à faire
 
 Par ordre d'importance, hors périmètre V0.1 déjà livré.
@@ -312,19 +334,15 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
       les cartes et l'historique de tous ses clients.
       Règle sur le seuil : on peut **débloquer** une récompense, jamais en
       retirer une. Relever le seuil ne reprend pas ce qu'un client a gagné.
+- [x] **Envoi des mails** — Resend sur `recompens.com`. Le service intégré de
+      Supabase, limité à quelques mails par heure, n'est plus utilisé.
 - [ ] **Mot de passe oublié.** Aucun écran, et le mail de réinitialisation
       passerait par le service Supabase saturé. Un commerçant qui perd son
       mot de passe est bloqué. Se réglera avec l'envoi des mails.
-- [ ] **Envoi des mails.** Le service intégré de Supabase est limité à
-      quelques mails par heure et part en indésirables. Il faut un SMTP
-      externe (Resend si domaine, Brevo sinon). Dépend du choix du nom.
-      En attendant : confirmer les comptes à la main dans Supabase →
-      Authentication → Users → ⋯ → Confirm email.
-
 ### Décisions produit en attente
 
-- [ ] **Nom et domaine.** Conditionne l'envoi des mails, l'identité visuelle
-      et l'URL des QR. `fidelizz.com` et `fidelizz.fr` sont déjà pris.
+- [x] **Nom et domaine** — `recompens.com`, avec `recompense.be` en
+      redirection pour protéger l'orthographe naturelle.
 - [ ] **Cumul des récompenses.** Les visites au-delà du seuil ne sont pas
       capitalisées aujourd'hui, et une seule récompense est en attente à la
       fois. À trancher avec un vrai commerçant.
@@ -337,6 +355,10 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
       affiché ; la carte utilise l'initiale du nom.
 
 ### Améliorations identifiées
+
+- [ ] **Traduire les erreurs d'authentification.** `registerMerchantAction`
+      remonte tel quel le message de Supabase, en anglais — « Error sending
+      confirmation email » s'affiche à un commerçant français.
 
 - [ ] **« Ajouter à l'écran d'accueil »** proposé juste après la création de
       la carte. Aujourd'hui, un client qui ferme l'onglet n'a qu'une façon de
