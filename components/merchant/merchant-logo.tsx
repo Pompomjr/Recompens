@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 /**
  * La pastille du commerce : son logo s'il en a un, l'initiale de son nom
  * sinon.
@@ -7,6 +11,12 @@
  * composant sert sur la carte client, sur l'affichette et dans le dashboard,
  * pour que le logo apparaisse partout dès qu'il est renseigné, et nulle part
  * tant qu'il ne l'est pas.
+ *
+ * Il replie AUSSI quand l'image ne charge pas. Le cas s'est produit en vrai :
+ * le fichier avait été supprimé du stockage alors que la base pointait encore
+ * dessus, et chaque écran affichait l'icône d'image cassée — y compris la
+ * carte des clients, qui n'y sont pour rien. Une adresse enregistrée n'est
+ * pas une garantie que le fichier existe encore, d'où ce composant client.
  *
  * Le logo est posé sur du BLANC, jamais sur la couleur du commerce : la
  * plupart des logos de commerce arrivent en PNG détouré pensé pour un fond
@@ -41,6 +51,8 @@ export function MerchantLogo({
   /** Marges éventuelles, laissées à l'appelant. */
   style?: React.CSSProperties;
 }) {
+  const [imageCassee, setImageCassee] = useState(false);
+
   const style: React.CSSProperties = {
     width: size,
     height: size,
@@ -48,7 +60,7 @@ export function MerchantLogo({
     ...styleExterne,
   };
 
-  if (logoUrl) {
+  if (logoUrl && !imageCassee) {
     return (
       <span
         className={`inline-flex shrink-0 items-center justify-center overflow-hidden ${className}`}
@@ -66,6 +78,7 @@ export function MerchantLogo({
         <img
           src={logoUrl}
           alt=""
+          onError={() => setImageCassee(true)}
           style={{
             width: "100%",
             height: "100%",

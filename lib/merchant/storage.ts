@@ -105,8 +105,13 @@ export async function uploadMerchantLogo(
     const url = `${base}/storage/v1/object/public/${LOGO_BUCKET}/${chemin}?v=${Date.now()}`;
     return { ok: true, url };
   } catch (error) {
+    // Le message technique remonte jusqu'à l'écran, volontairement. Ce bloc
+    // attrape ce que le serveur n'a pas su formuler : une phrase rassurante
+    // et vide envoie le commerçant réessayer indéfiniment, et nous laisse
+    // sans rien à chercher.
+    const detail = error instanceof Error ? error.message : String(error);
     console.error("[storage] envoi impossible:", error);
-    return { ok: false, message: "L'envoi a échoué. Réessayez dans un instant." };
+    return { ok: false, message: `L'envoi a échoué : ${detail}` };
   }
 }
 
