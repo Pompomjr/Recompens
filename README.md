@@ -297,8 +297,17 @@ pour accueillir un nouveau commerçant**.
   dont le contenant EST le produit : une tasse chez un café, une assiette au
   restaurant. Chez un coiffeur, un flacon ne raconte rien — on a essayé.
 
-Quand `cardStyle = VESSEL`, `Merchant.vesselShape` choisit la silhouette
-(`CUP`, `PASTA`). Les silhouettes vivent dans `lib/loyalty/vessels.ts` :
+Quand `cardStyle = VESSEL`, `Merchant.vesselShape` choisit la silhouette.
+Trois existent, et elles racontent la progression de trois façons :
+
+| Silhouette | Métier | Comment ça progresse |
+| --- | --- | --- |
+| `CUP` | café | la tasse **se remplit** |
+| `PASTA` | restaurant | la **portion grossit** — une assiette ne se remplit pas par le bas |
+| `SANDWICH` | sandwicherie | l'objet **se construit**, une couche par visite |
+
+`SANDWICH` est la plus lisible des trois : on voit où en est le client sans
+lire le chiffre. C'est celle à montrer à quelqu'un qui découvre le produit. Les silhouettes vivent dans `lib/loyalty/vessels.ts` :
 géométrie, couleur du contenu et garniture. Ajouter un métier = ajouter une
 entrée dans ce fichier et une valeur à l'enum.
 

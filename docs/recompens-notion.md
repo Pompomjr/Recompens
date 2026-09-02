@@ -67,7 +67,9 @@ Supabase → **Table Editor** → table `merchants` → sa ligne :
 | --- | --- |
 | `brand_color` | Sa couleur, format `#14432E` |
 | `card_style` | `TICKET` ou `VESSEL` |
-| `vessel_shape` | `CUP` ou `PASTA`, seulement si `VESSEL` |
+| `vessel_shape` | `CUP`, `PASTA` ou `SANDWICH`, seulement si `VESSEL` |
+
+Les trois silhouettes racontent la progression différemment : la tasse **se remplit**, la portion de pâtes **grossit**, le sandwich **se construit** couche par couche. La dernière est la plus parlante — on voit où en est le client sans lire le chiffre.
 
 **Comment choisir :** `VESSEL` seulement si le contenant EST le produit qu'on vient chercher — une tasse chez un café, une assiette au restaurant. Chez un coiffeur ou un fleuriste, `TICKET`. Dans le doute, `TICKET` : il marche partout.
 

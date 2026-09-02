@@ -35,8 +35,9 @@ enum CardStyle {
 
 // Silhouette qui se remplit, quand cardStyle = VESSEL.
 enum VesselShape {
-  CUP   // café
-  PASTA // restaurant
+  CUP      // café — se remplit
+  PASTA    // restaurant — se remplit
+  SANDWICH // sandwicherie — se construit, couche par couche
 }
 
 // -----------------------------------------------------------------------
