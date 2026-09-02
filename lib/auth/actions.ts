@@ -172,8 +172,35 @@ export async function loginAction(
   const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error || !data.user) {
-    // Message volontairement générique : ne pas révéler si l'email existe.
-    return { status: "error", message: "Email ou mot de passe incorrect." };
+    // La cause réelle est tracée pour nous : sans elle, un commerçant bloqué
+    // et nous cherchons à l'aveugle. Ce qu'il voit, lui, reste volontairement
+    // générique pour ne pas révéler si l'adresse existe.
+    console.error("[login] échec:", error?.code ?? error?.message ?? "sans erreur");
+
+    // Deux cas méritent un vrai message : ils ne sont pas des identifiants
+    // erronés, et laisser croire le contraire envoie la personne changer un
+    // mot de passe qui était bon.
+    if (error?.code === "email_not_confirmed") {
+      return {
+        status: "error",
+        message:
+          "Votre adresse n'est pas encore confirmée. Cliquez sur le lien reçu par mail, puis reconnectez-vous.",
+      };
+    }
+
+    if (error?.code === "over_request_rate_limit") {
+      return {
+        status: "error",
+        message:
+          "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
+      };
+    }
+
+    return {
+      status: "error",
+      message:
+        "Email ou mot de passe incorrect. Utilisez « Mot de passe oublié » si vous avez un doute.",
+    };
   }
 
   const user = await prisma.user.findUnique({ where: { id: data.user.id } });
