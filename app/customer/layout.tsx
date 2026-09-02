@@ -5,6 +5,7 @@ import {
   ForbiddenError,
 } from "@/lib/auth/session";
 import { logoutAction } from "@/lib/auth/actions";
+import { ServiceWorker } from "@/components/customer/service-worker";
 
 /**
  * Barrière d'accès réelle de l'espace client (cf SPEC §16).
@@ -37,6 +38,7 @@ export default async function CustomerLayout({
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-ink text-paper">
+      <ServiceWorker />
       <header className="mx-auto flex w-full max-w-sm items-center justify-between px-5 pt-5">
         <span className="font-display text-sm tracking-wide">
           {firstName.toUpperCase()}

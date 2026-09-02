@@ -6,6 +6,7 @@ import { generateCustomerQr } from "@/lib/qr/generate";
 import { getMembershipTransactions } from "@/lib/transactions/queries";
 import { LoyaltyCard } from "@/components/customer/loyalty-card";
 import { safeLogoUrl } from "@/lib/merchant/logo";
+import { GarderCarte } from "@/components/customer/garder-carte";
 import { BrandMarkSolid } from "@/components/brand/logo";
 import { VesselCard } from "@/components/customer/vessel-card";
 import {
@@ -102,6 +103,10 @@ export default async function CustomerCardPage({
           justStamped={justStamped}
         />
       )}
+
+      {/* Juste sous la carte : c'est le moment où le client la regarde, donc
+          le seul où lui proposer de la garder a une chance d'aboutir. */}
+      <GarderCarte />
 
       {/* cf SPEC §14 — activité du client. Lecture seule. */}
       <section className="flex flex-col gap-3">
