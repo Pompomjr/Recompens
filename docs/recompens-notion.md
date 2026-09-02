@@ -13,13 +13,15 @@ Le client scanne un QR posé sur le comptoir, tape son prénom, sa carte existe.
 | Quoi | Où | Note |
 | --- | --- | --- |
 | Le site | https://recompens.com | Production |
-| Code source | github.com/Pompomjr/Fidelizzz | Dépôt public, à renommer |
-| Hébergement | Vercel, projet `fidelizzz` | Se redéploie à chaque `git push` |
+| Code source | github.com/Pompomjr/Recompens | Dépôt public |
+| Hébergement | Vercel | Se redéploie à chaque `git push` |
 | Base de production | Supabase `ejghjhocrsjrvplayqev` | Les vrais commerçants |
 | Base de développement | Supabase `iqynnitrnzitwdirzhrn` | Les essais |
 | Envoi des mails | Resend, domaine `recompens.com` | Expéditeur `contact@recompens.com` |
 | Domaines | OVH | `recompens.com` + `recompense.be` en redirection |
 | Boîte mail | OVH Zimbra | `contact@recompens.com` |
+
+Les anciens QR imprimés pointant sur `fidelizzz.vercel.app` continuent de fonctionner : l'adresse redirige vers `recompens.com` en conservant le chemin.
 
 ⚠️ **Ne jamais lancer `npm test` sur la base de production.** Les tests créent et suppriment des données réelles.
 
