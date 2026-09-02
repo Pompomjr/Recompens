@@ -59,6 +59,16 @@ export default async function LoginPage({
       </p>
 
       <p className="text-center text-sm text-fg-soft">
+        Client, vous avez perdu votre carte ?{" "}
+        <Link
+          href="/retrouver-ma-carte"
+          className="font-medium text-brand underline"
+        >
+          La retrouver
+        </Link>
+      </p>
+
+      <p className="text-center text-sm text-fg-soft">
         Vous êtes commerçant et n&apos;avez pas encore de compte ?{" "}
         <Link href="/register" className="font-medium text-brand underline">
           Créer mon compte

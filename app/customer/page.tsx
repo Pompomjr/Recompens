@@ -3,6 +3,7 @@ import { requireCustomer } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { cardTheme } from "@/lib/theme";
 import { visitsLabel } from "@/lib/format";
+import { AttacherEmail } from "@/components/customer/attacher-email";
 
 /**
  * cf SPEC §16 — /customer : les cartes du client.
@@ -24,6 +25,10 @@ export default async function CustomerHomePage() {
       <h1 className="font-display text-3xl tracking-tight text-paper">
         MES CARTES
       </h1>
+
+      {/* Proposé une seule fois : une adresse déjà donnée n'a pas à être
+          redemandée à chaque visite. */}
+      {customer.email ? null : <AttacherEmail />}
 
       {memberships.length === 0 ? (
         <p className="border border-dashed border-paper/20 p-5 text-sm text-paper/50">

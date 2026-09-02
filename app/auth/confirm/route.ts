@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/auth/supabase-server";
+import { getCurrentUser } from "@/lib/auth/session";
 
 /**
  * Point d'atterrissage du lien de confirmation d'adresse.
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL("/login?confirme=autre-appareil", url));
     }
 
-    return NextResponse.redirect(new URL("/dashboard", url));
+    return NextResponse.redirect(new URL(await accueil(), url));
   }
 
   if (!tokenHash || !type) {
@@ -62,7 +63,19 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/login?confirme=expire", url));
   }
 
-  // La session est posée : `requireMerchant()` prendra le relais et renverra
-  // vers la création du commerce si la ligne métier manque.
-  return NextResponse.redirect(new URL("/dashboard", url));
+  return NextResponse.redirect(new URL(await accueil(), url));
+}
+
+/**
+ * Où déposer la personne une fois sa session ouverte.
+ *
+ * Cette route sert désormais trois parcours — confirmation d'inscription du
+ * commerçant, rattachement d'une adresse à une carte, lien magique de
+ * récupération — et le rôle est la seule chose qui les distingue. Renvoyer
+ * tout le monde vers /dashboard enverrait un client sur un écran qui le
+ * rejetterait aussitôt.
+ */
+async function accueil(): Promise<string> {
+  const user = await getCurrentUser();
+  return user?.role === "CUSTOMER" ? "/customer" : "/dashboard";
 }

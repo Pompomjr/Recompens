@@ -108,7 +108,6 @@ change quand la règle change.
 
 ### Améliorations identifiées
 
-- [ ] **« Ajouter à l'écran d'accueil »** après création de la carte — aujourd'hui, un client qui ferme l'onglet ne peut retrouver sa carte qu'en rescannant le QR en boutique.
 - [ ] **Confirmer le mot de passe à l'inscription** — il n'est saisi qu'une fois ; une faute de frappe crée un compte inaccessible.
 - [ ] **Écran d'administration** — pour régler style et délai sans passer par Supabase.
 - [ ] **Liste des clients** dans le dashboard — encore un écran vide.

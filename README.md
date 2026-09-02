@@ -408,15 +408,8 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
       d'erreur ne peut pas la distinguer d'un mot de passe oublié. Cas
       rencontré en vrai le 2026-09-02.
 
-- [ ] **« Ajouter à l'écran d'accueil »** proposé juste après la création de
-      la carte. Aujourd'hui, un client qui ferme l'onglet n'a qu'une façon de
-      retrouver sa carte : retourner en boutique et rescanner le QR du
-      comptoir. Chez lui, il ne peut pas consulter son compteur.
 - [ ] **Écran d'administration** (§3 rôle ADMIN, §16 `/admin`) — réglerait
       notamment le délai anti-cumul sans passer par le Table Editor.
-- [ ] **Récupération d'une carte perdue.** L'identité client tient à un
-      cookie : changement de téléphone ou cookies effacés = carte perdue.
-      L'email optionnel est le crochet prévu pour un lien de récupération.
 - [ ] **Liste des clients** (`/dashboard/customers`), encore en placeholder.
 
 ## Points d'architecture à retenir

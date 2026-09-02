@@ -1,0 +1,110 @@
+<!--
+  Modèle « Magic Link » de Supabase, en français.
+
+  À coller dans Supabase → Authentication → Emails → Magic Link.
+  Sujet suggéré : Retrouvez votre carte de fidélité — Recompens
+
+  C'est le mail qu'un client reçoit après avoir demandé « J'ai perdu ma
+  carte ». Il ne s'adresse donc PAS à un commerçant : ni jargon, ni compte, ni
+  tableau de bord — une carte, des visites, un lien.
+
+  Mêmes contraintes d'écriture que les autres modèles (tableaux, styles en
+  ligne, aucune image, logo reconstruit en HTML) : voir emails/confirm-signup.html.
+
+  Le lien passe par {{ .TokenHash }} et non par {{ .ConfirmationURL }} : ce
+  mail s'ouvre presque toujours sur le téléphone, souvent dans une autre
+  application que le navigateur d'origine, où le cookie PKCE n'existe pas.
+-->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#101113" style="background-color: #101113; margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+  <tr>
+    <td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#17181a" style="max-width: 520px; background-color: #17181a; border: 1px solid #2a2c2f;">
+
+        <tr>
+          <td style="padding: 28px 32px 0 32px;">
+            <table cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td width="44" height="44" bgcolor="#2FBF71" align="center" valign="middle"
+                    style="width: 44px; height: 44px; background-color: #2FBF71; border-radius: 22px; font-family: 'Arial Black', Arial, Helvetica, sans-serif; font-size: 24px; font-weight: 900; line-height: 44px; color: #10331F;">
+                  R
+                </td>
+                <td style="padding-left: 12px; font-family: 'Arial Black', Arial, Helvetica, sans-serif; font-size: 19px; font-weight: 900; letter-spacing: 0.5px; color: #f4f4f5;">
+                  R<span style="color: #2FBF71;">E</span>COMP<span style="color: #2FBF71;">E</span>NS
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 22px 32px 0 32px;">
+            <p style="margin: 0 0 6px 0; font-family: 'Courier New', Courier, monospace; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #2FBF71;">
+              Votre carte vous attend
+            </p>
+            <h1 style="margin: 0; font-size: 27px; line-height: 1.15; color: #f4f4f5; font-weight: 800; letter-spacing: -0.4px;">
+              Retrouvez votre carte
+            </h1>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 16px 32px 0 32px;">
+            <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #a8abaf;">
+              Voici le lien qui rouvre votre carte de fidélité, avec toutes les
+              visites déjà validées. Il ne fonctionne qu'une fois.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 26px 32px 0 32px;">
+            <table cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td bgcolor="#2FBF71" style="background-color: #2FBF71;">
+                  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=magiclink"
+                     style="display: inline-block; padding: 16px 28px; font-size: 15px; font-weight: 700; letter-spacing: 1px; color: #10331F; text-decoration: none;">
+                    RETROUVER MA CARTE
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 20px 32px 0 32px;">
+            <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #75797e;">
+              Si le bouton ne fonctionne pas, copiez cette adresse dans votre
+              navigateur :
+            </p>
+            <p style="margin: 8px 0 0 0; font-size: 13px; line-height: 1.5; color: #2FBF71; word-break: break-all;">
+              {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=magiclink
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 22px 32px 28px 32px;">
+            <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #75797e;">
+              Vous n'avez rien demandé ? Ignorez ce message : sans ce
+              lien, personne ne peut ouvrir votre carte.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 520px;">
+        <tr>
+          <td align="center" style="padding: 18px 16px 0 16px;">
+            <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #75797e;">
+              Recompens — cartes de fidélité digitales pour commerces de proximité<br>
+              Une question ? Répondez simplement à ce message.
+            </p>
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
