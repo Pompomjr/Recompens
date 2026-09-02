@@ -69,6 +69,20 @@ export function RegisterMerchantForm() {
         <span className="text-xs text-fg-faint">8 caractères minimum.</span>
       </label>
 
+      <label className="flex flex-col gap-1.5">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-fg-faint">
+          Confirmez le mot de passe
+        </span>
+        <input
+          type="password"
+          name="confirmation"
+          required
+          minLength={8}
+          autoComplete="new-password"
+          className="rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-fg outline-none placeholder:text-fg-faint focus:border-brand"
+        />
+      </label>
+
       {state.status === "error" ? (
         <p role="alert" className="text-sm text-red-400">
           {state.message}

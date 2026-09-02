@@ -20,17 +20,28 @@ export const loginSchema = z.object({
  * /register est réservé au commerçant — le client, lui, s'inscrit
  * automatiquement via /join/[programId] (cf SPEC §8).
  */
-export const registerMerchantSchema = z.object({
-  email,
-  password: z
-    .string()
-    .min(8, "Le mot de passe doit contenir au moins 8 caractères"),
-  merchantName: z
-    .string()
-    .trim()
-    .min(2, "Le nom du commerce est requis")
-    .max(80, "Le nom du commerce est trop long"),
-});
+export const registerMerchantSchema = z
+  .object({
+    email,
+    password: z
+      .string()
+      .min(8, "Le mot de passe doit contenir au moins 8 caractères"),
+    confirmation: z.string(),
+    merchantName: z
+      .string()
+      .trim()
+      .min(2, "Le nom du commerce est requis")
+      .max(80, "Le nom du commerce est trop long"),
+  })
+  // La confirmation n'est pas une formalité : le champ est masqué, et une
+  // faute de frappe crée un compte auquel personne ne peut se connecter.
+  // Pire, l'échec est alors indiscernable d'un mot de passe oublié — le cas
+  // s'est produit avec une vraie commerçante le 2026-09-02, et a coûté une
+  // demi-heure de recherche pour une case manquante.
+  .refine((data) => data.password === data.confirmation, {
+    message: "Les deux mots de passe ne correspondent pas",
+    path: ["confirmation"],
+  });
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterMerchantInput = z.infer<typeof registerMerchantSchema>;

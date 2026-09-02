@@ -51,6 +51,7 @@ export async function registerMerchantAction(
   const parsed = registerMerchantSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
+    confirmation: formData.get("confirmation"),
     merchantName: formData.get("merchantName"),
   });
 
