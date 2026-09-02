@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { BrandMarkSolid } from "@/components/brand/logo";
-import { MerchantLogo } from "@/components/merchant/merchant-logo";
 import { formatVisits } from "@/lib/format";
 
 /**
@@ -136,16 +135,42 @@ export function Poster({
             boxSizing: "border-box",
           }}
         >
-          {/* Le logo remplace l'étiquette en haut d'affiche : c'est lui que
-              le client reconnaît de loin, mieux qu'un intertitre. */}
+          {/* Le logo ouvre l'affiche : c'est lui que le client reconnaît de
+              loin, mieux qu'un intertitre.
+
+              Contrairement à la carte, il n'est PAS enfermé dans un rond. Une
+              enseigne dessine rarement son logo dans un cercle — une planche,
+              une devanture, un bandeau sont larges — et la pastille ronde les
+              réduirait au tiers de la place disponible. Ici la hauteur est
+              fixe, la largeur libre.
+
+              La plaque blanche reste, y compris sur fond clair : beaucoup de
+              logos de commerce sont dessinés en foncé sur blanc, et la
+              version couleur les ferait disparaître. */}
           {logoUrl ? (
-            <MerchantLogo
-              name={merchantName}
-              logoUrl={logoUrl}
-              size="4.4em"
-              color={texte}
-              style={{ marginBottom: "0.8em" }}
-            />
+            <div
+              style={{
+                backgroundColor: "#FFFFFF",
+                padding: "0.5em 0.8em",
+                marginBottom: "1em",
+                lineHeight: 0,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- adresse
+                  saisie en base : la passer à l'optimiseur imposerait de
+                  déclarer chaque domaine dans next.config. */}
+              <img
+                src={logoUrl}
+                alt={merchantName}
+                style={{
+                  height: "5em",
+                  width: "auto",
+                  maxWidth: "15em",
+                  objectFit: "contain",
+                  display: "block",
+                }}
+              />
+            </div>
           ) : null}
 
           <p
