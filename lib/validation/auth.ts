@@ -34,3 +34,28 @@ export const registerMerchantSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterMerchantInput = z.infer<typeof registerMerchantSchema>;
+
+/**
+ * Demande de réinitialisation. On ne valide que l'adresse : la réponse sera
+ * la même qu'elle existe ou non, pour ne pas révéler qui a un compte.
+ */
+export const forgotPasswordSchema = z.object({ email });
+
+/**
+ * Nouveau mot de passe.
+ *
+ * La confirmation n'est pas une formalité : le champ est masqué, une faute de
+ * frappe enfermerait la personne dehors une seconde fois — exactement ce
+ * qu'on est en train de réparer.
+ */
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Le mot de passe doit contenir au moins 8 caractères"),
+    confirmation: z.string(),
+  })
+  .refine((data) => data.password === data.confirmation, {
+    message: "Les deux mots de passe ne correspondent pas",
+    path: ["confirmation"],
+  });

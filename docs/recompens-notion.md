@@ -90,10 +90,6 @@ Il imprime le QR et le pose sur son comptoir. Ses clients le scannent.
 
 ## Ce qui manque encore
 
-### Bloquant pour un usage large
-
-- [ ] **Mot de passe oublié** — aucun écran. Un commerçant qui perd son mot de passe est coincé ; il faut le débloquer à la main.
-
 ### Décisions produit en attente
 
 - [ ] **Cumul des récompenses** — les visites au-delà du seuil ne sont pas capitalisées. À trancher avec un vrai commerçant.
@@ -109,6 +105,14 @@ Il imprime le QR et le pose sur son comptoir. Ses clients le scannent.
 - [ ] **Traduire les erreurs d'authentification** — certaines remontent en anglais.
 
 ---
+
+## Si un commerçant perd son mot de passe
+
+Il clique **Mot de passe oublié** sur la page de connexion, reçoit un lien, en choisit un nouveau et se retrouve connecté.
+
+Le message affiché est le même que l'adresse existe ou non — c'est volontaire : dire « compte inconnu » permettrait à n'importe qui de découvrir quels commerçants sont inscrits.
+
+Si le mail n'arrive pas, il est dans les indésirables neuf fois sur dix.
 
 ## Ce qui est garanti
 

@@ -28,6 +28,12 @@ export default async function LoginPage({
       <LoginForm next={next} />
 
       <p className="text-center text-sm text-neutral-600">
+        <Link href="/forgot-password" className="font-medium underline">
+          Mot de passe oublié ?
+        </Link>
+      </p>
+
+      <p className="text-center text-sm text-neutral-600">
         Vous êtes commerçant et n&apos;avez pas encore de compte ?{" "}
         <Link href="/register" className="font-medium underline">
           Créer mon compte

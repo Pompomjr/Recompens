@@ -340,6 +340,10 @@ sous-domaines `send` et `rsend`, ce qui laisse la boîte OVH intacte.
 
 Score mail-tester : **9,6/10**, authentification SPF + DKIM + DMARC complète.
 
+⚠️ **Supabase → Authentication → URL Configuration → Redirect URLs** doit
+contenir `https://recompens.com/**`. Sans cette autorisation, le lien de
+réinitialisation ne revient pas sur `/auth/reset` et le parcours casse.
+
 Les modèles de messages sont versionnés dans `emails/`. Ils ne sont pas lus
 par l'application : il faut les **coller dans Supabase** → Authentication →
 Emails. Les garder ici évite qu'ils n'existent que dans un tableau de bord.
@@ -358,9 +362,9 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
       retirer une. Relever le seuil ne reprend pas ce qu'un client a gagné.
 - [x] **Envoi des mails** — Resend sur `recompens.com`. Le service intégré de
       Supabase, limité à quelques mails par heure, n'est plus utilisé.
-- [ ] **Mot de passe oublié.** Aucun écran, et le mail de réinitialisation
-      passerait par le service Supabase saturé. Un commerçant qui perd son
-      mot de passe est bloqué. Se réglera avec l'envoi des mails.
+- [x] **Mot de passe oublié** — `/forgot-password`, `/auth/reset`,
+      `/reset-password`. La réponse est la même que l'adresse existe ou non :
+      dire « compte inconnu » révélerait qui est inscrit.
 ### Décisions produit en attente
 
 - [x] **Nom et domaine** — `recompens.com`, avec `recompense.be` en

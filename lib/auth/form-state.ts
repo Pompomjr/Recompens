@@ -9,6 +9,8 @@
 export type AuthFormState =
   | { status: "idle" }
   | { status: "error"; message: string }
-  | { status: "confirm_email"; message: string };
+  | { status: "confirm_email"; message: string }
+  /** Message neutre à afficher à la place du formulaire (mail envoyé, etc.). */
+  | { status: "sent"; message: string };
 
 export const initialAuthFormState: AuthFormState = { status: "idle" };

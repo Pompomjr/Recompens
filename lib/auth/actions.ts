@@ -3,7 +3,13 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "./supabase-server";
 import { prisma } from "@/lib/db/prisma";
-import { loginSchema, registerMerchantSchema } from "@/lib/validation/auth";
+import {
+  loginSchema,
+  registerMerchantSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from "@/lib/validation/auth";
+import { getAppUrl } from "@/lib/app-url";
 import { ROLE_HOME, type AppRole } from "./roles";
 import { deleteAuthUser } from "./admin";
 import type { AuthFormState } from "./form-state";
@@ -205,4 +211,94 @@ export async function logoutAction() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
   redirect("/login");
+}
+
+/**
+ * Demande de réinitialisation du mot de passe.
+ *
+ * cf SPEC §18 dans l'esprit : la réponse est TOUJOURS la même, que l'adresse
+ * existe ou non. Répondre « adresse inconnue » offrirait à un attaquant le
+ * moyen de savoir quels commerçants sont inscrits — c'est la même raison qui
+ * fait que Supabase brouille déjà l'inscription d'une adresse existante.
+ *
+ * Le lien reçu ramène sur /auth/reset, qui échange le code contre une session
+ * de récupération avant d'ouvrir le formulaire.
+ */
+export async function requestPasswordResetAction(
+  _prevState: AuthFormState,
+  formData: FormData
+): Promise<AuthFormState> {
+  const parsed = forgotPasswordSchema.safeParse({
+    email: formData.get("email"),
+  });
+
+  if (!parsed.success) {
+    return { status: "error", message: parsed.error.issues[0].message };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const appUrl = await getAppUrl();
+
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    parsed.data.email,
+    { redirectTo: `${appUrl}/auth/reset` }
+  );
+
+  if (error) {
+    // Tracé pour nous, invisible pour la personne : lui dire que l'envoi a
+    // échoué reviendrait à confirmer que l'adresse existe.
+    console.error("[reset] envoi impossible:", error.message);
+  }
+
+  return {
+    status: "sent",
+    message:
+      "Si un compte existe avec cette adresse, un lien de réinitialisation vient d'être envoyé. Pensez à regarder vos indésirables.",
+  };
+}
+
+/**
+ * Enregistre le nouveau mot de passe.
+ *
+ * Ne fonctionne qu'avec la session ouverte par le lien de récupération :
+ * sans elle, `updateUser` échoue. C'est ce qui empêche quiconque d'appeler
+ * cette action pour changer le mot de passe d'un autre.
+ */
+export async function updatePasswordAction(
+  _prevState: AuthFormState,
+  formData: FormData
+): Promise<AuthFormState> {
+  const parsed = resetPasswordSchema.safeParse({
+    password: formData.get("password"),
+    confirmation: formData.get("confirmation"),
+  });
+
+  if (!parsed.success) {
+    return { status: "error", message: parsed.error.issues[0].message };
+  }
+
+  const supabase = await createSupabaseServerClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      status: "error",
+      message:
+        "Ce lien de réinitialisation a expiré. Demandez-en un nouveau depuis la page de connexion.",
+    };
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: parsed.data.password,
+  });
+
+  if (error) {
+    return { status: "error", message: error.message };
+  }
+
+  const record = await prisma.user.findUnique({ where: { id: user.id } });
+  redirect(record ? ROLE_HOME[record.role] : "/login");
 }
