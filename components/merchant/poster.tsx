@@ -144,14 +144,17 @@ export function Poster({
               réduirait au tiers de la place disponible. Ici la hauteur est
               fixe, la largeur libre.
 
-              La plaque blanche reste, y compris sur fond clair : beaucoup de
-              logos de commerce sont dessinés en foncé sur blanc, et la
-              version couleur les ferait disparaître. */}
+              La plaque blanche n'apparaît QUE sur la version couleur, où le
+              fond est l'encre du commerce : beaucoup de logos sont dessinés en
+              foncé sur blanc et y disparaîtraient. Sur la version claire, le
+              logo est posé à nu — une plaque n'y protégerait rien et se
+              verrait à l'impression comme un rectangle rapporté. */}
           {logoUrl ? (
             <div
               style={{
-                backgroundColor: "#FFFFFF",
-                padding: "0.5em 0.8em",
+                ...(sombre
+                  ? { backgroundColor: "#FFFFFF", padding: "0.5em 0.8em" }
+                  : null),
                 marginBottom: "1em",
                 lineHeight: 0,
               }}

@@ -18,9 +18,15 @@ import { useState } from "react";
  * carte des clients, qui n'y sont pour rien. Une adresse enregistrée n'est
  * pas une garantie que le fichier existe encore, d'où ce composant client.
  *
- * Le logo est posé sur du BLANC, jamais sur la couleur du commerce : la
- * plupart des logos de commerce arrivent en PNG détouré pensé pour un fond
- * clair, et un logo foncé sur une encre foncée disparaît.
+ * Le logo, lui, est posé À NU sur le fond. Le disque et le filet appartiennent
+ * au repli, pas à l'image : un PNG détouré posé sur une plaque blanche donne
+ * une vignette collée sur la page, visible comme telle sur fond sombre. Il
+ * n'est pas non plus rogné en rond — un logo large y perdrait ses extrémités.
+ *
+ * Contrepartie assumée : un logo très foncé sur une encre très foncée sera
+ * peu lisible. C'est au commerçant de fournir un fichier adapté, et l'écran
+ * Paramètres le lui dit — plutôt que de dégrader tous les logos corrects pour
+ * protéger le cas rare.
  */
 
 export function MerchantLogo({
@@ -63,12 +69,8 @@ export function MerchantLogo({
   if (logoUrl && !imageCassee) {
     return (
       <span
-        className={`inline-flex shrink-0 items-center justify-center overflow-hidden ${className}`}
-        style={{
-          ...style,
-          backgroundColor: "#FFFFFF",
-          ...(border ? { border: `2px solid ${border}` } : {}),
-        }}
+        className={`inline-flex shrink-0 items-center justify-center ${className}`}
+        style={{ ...style, borderRadius: undefined }}
         role="img"
         aria-label={name}
       >
@@ -85,8 +87,6 @@ export function MerchantLogo({
             // `contain` et pas `cover` : un logo rogné devient une autre
             // marque. Mieux vaut du blanc autour qu'un nom coupé.
             objectFit: "contain",
-            // En pourcentage, donc valable que la taille soit en px ou en em.
-            padding: "10%",
             boxSizing: "border-box",
           }}
         />
