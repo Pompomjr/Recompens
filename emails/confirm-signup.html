@@ -16,6 +16,15 @@
   - le lien est répété en clair sous le bouton, pour les clients qui
     n'affichent pas les boutons et parce que ça rassure le lecteur méfiant
 
+  Le logo est RECONSTRUIT en HTML plutôt qu'importé en image : la pastille est
+  une cellule verte au R centré, et les deux E du mot sont colorés à la main.
+  Une image serait bloquée par défaut dans la plupart des clients — la marque
+  disparaîtrait précisément dans le mail où elle compte le plus. Saira n'étant
+  pas chargeable, la graisse la plus lourde disponible partout tient le rôle.
+
+  Sur Outlook Windows la pastille rendra CARRÉE (border-radius non supporté).
+  C'est assumé : un carré vert au R reste la marque, une image cassée non.
+
   Le lien NE PASSE PAS par la variable {{ .ConfirmationURL }}, volontairement.
   Celle-ci renvoie un code PKCE dont le vérificateur vit dans un cookie du
   navigateur qui a servi à l'inscription — or ce mail s'ouvre le plus souvent
@@ -23,30 +32,41 @@
   main avec {{ .TokenHash }}, que /auth/confirm vérifie depuis n'importe quel
   appareil, et qui ouvre la session directement sur le dashboard.
 -->
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f7f1e8; margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#101113" style="background-color: #101113; margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
   <tr>
     <td align="center">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 520px; background-color: #ffffff; border: 1px solid #e3d8c8;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#17181a" style="max-width: 520px; background-color: #17181a; border: 1px solid #2a2c2f;">
 
         <tr>
           <td style="padding: 28px 32px 0 32px;">
-            <p style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #a63a28; text-transform: uppercase;">
-              Recompens
-            </p>
+            <table cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td width="44" height="44" bgcolor="#2FBF71" align="center" valign="middle"
+                    style="width: 44px; height: 44px; background-color: #2FBF71; border-radius: 22px; font-family: 'Arial Black', Arial, Helvetica, sans-serif; font-size: 24px; font-weight: 900; line-height: 44px; color: #10331F;">
+                  R
+                </td>
+                <td style="padding-left: 12px; font-family: 'Arial Black', Arial, Helvetica, sans-serif; font-size: 19px; font-weight: 900; letter-spacing: 0.5px; color: #f4f4f5;">
+                  R<span style="color: #2FBF71;">E</span>COMP<span style="color: #2FBF71;">E</span>NS
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
         <tr>
-          <td style="padding: 20px 32px 0 32px;">
-            <h1 style="margin: 0; font-size: 26px; line-height: 1.2; color: #17140f; font-weight: 700;">
+          <td style="padding: 22px 32px 0 32px;">
+            <p style="margin: 0 0 6px 0; font-family: 'Courier New', Courier, monospace; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #2FBF71;">
+              Plus qu'une étape
+            </p>
+            <h1 style="margin: 0; font-size: 27px; line-height: 1.15; color: #f4f4f5; font-weight: 800; letter-spacing: -0.4px;">
               Confirmez votre adresse
             </h1>
           </td>
         </tr>
 
         <tr>
-          <td style="padding: 18px 32px 0 32px;">
-            <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #3d372f;">
+          <td style="padding: 16px 32px 0 32px;">
+            <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #a8abaf;">
               Bienvenue. Votre compte commerçant est presque prêt : il ne manque
               qu'une confirmation de votre adresse email, pour être sûrs que
               c'est bien vous.
@@ -55,12 +75,12 @@
         </tr>
 
         <tr>
-          <td style="padding: 24px 32px 0 32px;">
+          <td style="padding: 26px 32px 0 32px;">
             <table cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td style="background-color: #17140f;">
-                  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup"
-                     style="display: inline-block; padding: 16px 28px; font-size: 15px; font-weight: 700; letter-spacing: 1px; color: #efe4ce; text-decoration: none;">
+                <td bgcolor="#2FBF71" style="background-color: #2FBF71;">
+                  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=signup"
+                     style="display: inline-block; padding: 16px 28px; font-size: 15px; font-weight: 700; letter-spacing: 1px; color: #10331F; text-decoration: none;">
                     CONFIRMER MON ADRESSE
                   </a>
                 </td>
@@ -71,23 +91,23 @@
 
         <tr>
           <td style="padding: 20px 32px 0 32px;">
-            <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #7a7168;">
+            <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #75797e;">
               Si le bouton ne fonctionne pas, copiez cette adresse dans votre
               navigateur :
             </p>
-            <p style="margin: 8px 0 0 0; font-size: 13px; line-height: 1.5; color: #a63a28; word-break: break-all;">
-              {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup
+            <p style="margin: 8px 0 0 0; font-size: 13px; line-height: 1.5; color: #2FBF71; word-break: break-all;">
+              {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=signup
             </p>
           </td>
         </tr>
 
         <tr>
-          <td style="padding: 24px 32px 0 32px;">
+          <td style="padding: 26px 32px 0 32px;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td style="border-top: 1px solid #e3d8c8; padding-top: 20px;">
-                  <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #3d372f;">
-                    <strong style="color: #17140f;">Une fois connecté</strong>, vous
+                <td style="border-top: 1px solid #2a2c2f; padding-top: 20px;">
+                  <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #a8abaf;">
+                    <strong style="color: #f4f4f5;">Une fois connecté</strong>, vous
                     créerez votre programme de fidélité et obtiendrez le QR code à
                     poser sur votre comptoir. Vos clients le scannent, leur carte
                     se crée toute seule — sans application à installer.
@@ -99,8 +119,8 @@
         </tr>
 
         <tr>
-          <td style="padding: 24px 32px 28px 32px;">
-            <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #7a7168;">
+          <td style="padding: 22px 32px 28px 32px;">
+            <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #75797e;">
               Vous n'êtes pas à l'origine de cette inscription ? Ignorez ce
               message, aucun compte ne sera activé.
             </p>
@@ -112,7 +132,7 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 520px;">
         <tr>
           <td align="center" style="padding: 18px 16px 0 16px;">
-            <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #9c8570;">
+            <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #75797e;">
               Recompens — cartes de fidélité digitales pour commerces de proximité<br>
               Une question ? Répondez simplement à ce message.
             </p>
