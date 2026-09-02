@@ -88,7 +88,14 @@ Table `loyalty_programs` → colonne `min_minutes_between_visits`. C'est le temp
 
 ### 5. Poser l'affichette
 
-Il imprime le QR et le pose sur son comptoir. Ses clients le scannent.
+**Programme → Imprimer l'affichette.** Elle est générée depuis la base : nom
+du commerce, règle, QR. Deux versions (claire, couleur du commerce) et deux
+formats (A5 comptoir, A4 vitrine). Chaque modification du programme demande
+une réimpression — c'est le prix d'une affichette qui ne ment jamais.
+
+Impression : A5 sur 200 g mat suffit au début, jamais de brillant (le reflet
+bloque le scan). Support : chevalet plexi A5 incliné, parce que la feuille se
+change quand la règle change.
 
 ---
 
@@ -102,7 +109,7 @@ Il imprime le QR et le pose sur son comptoir. Ses clients le scannent.
 ### Améliorations identifiées
 
 - [ ] **« Ajouter à l'écran d'accueil »** après création de la carte — aujourd'hui, un client qui ferme l'onglet ne peut retrouver sa carte qu'en rescannant le QR en boutique.
-- [ ] **L'affichette de comptoir** — c'est la vraie surface de marque du produit, celle que des centaines de gens verront. À concevoir avec autant de soin que la carte.
+- [ ] **Confirmer le mot de passe à l'inscription** — il n'est saisi qu'une fois ; une faute de frappe crée un compte inaccessible.
 - [ ] **Écran d'administration** — pour régler style et délai sans passer par Supabase.
 - [ ] **Liste des clients** dans le dashboard — encore un écran vide.
 - [ ] **Logo du commerçant** — le champ existe, il n'est pas affiché.
