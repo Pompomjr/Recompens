@@ -69,6 +69,9 @@ export default async function AffichePage() {
       <Poster
         merchantName={merchant.name}
         logoUrl={safeLogoUrl(merchant.logoUrl)}
+        vesselShape={
+          merchant.cardStyle === "VESSEL" ? merchant.vesselShape : null
+        }
         visitsRequired={program.visitsRequired}
         rewardName={program.rewardName}
         qrDataUrl={qrDataUrl}

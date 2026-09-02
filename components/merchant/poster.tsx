@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import type { VesselShape } from "@prisma/client";
+import { QrOrnement } from "./qr-ornement";
 import { BrandMarkSolid } from "@/components/brand/logo";
 import { formatVisits } from "@/lib/format";
 
@@ -40,6 +42,7 @@ const FORMATS: Record<Format, { largeur: string; hauteur: string; base: string; 
 export function Poster({
   merchantName,
   logoUrl,
+  vesselShape,
   visitsRequired,
   rewardName,
   qrDataUrl,
@@ -49,6 +52,11 @@ export function Poster({
   merchantName: string;
   /** Logo du commerce. Absent, l'affichette s'ouvre directement sur le nom. */
   logoUrl: string | null;
+  /**
+   * Silhouette du commerce, qui devient le décor autour du QR. Absente, le
+   * logo prend le relais en filigrane.
+   */
+  vesselShape: VesselShape | null;
   visitsRequired: number;
   rewardName: string;
   qrDataUrl: string;
@@ -221,7 +229,7 @@ export function Poster({
               width: "3.4em",
               height: "0.16em",
               backgroundColor: accent,
-              margin: "1.5em 0",
+              margin: "1.1em 0",
             }}
           />
 
@@ -230,18 +238,38 @@ export function Poster({
               pas un scan raté. */}
           <div
             style={{
-              backgroundColor: "#FFFFFF",
-              padding: "0.7em",
-              lineHeight: 0,
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "23em",
+              height: "20.5em",
             }}
           >
+            <QrOrnement
+              shape={vesselShape}
+              logoUrl={logoUrl}
+              accent={accent}
+            />
+
+            {/* La plaque blanche est la zone de silence du QR : elle passe
+                TOUJOURS au-dessus du décor, jamais l'inverse. */}
+            <div
+              style={{
+                position: "relative",
+                backgroundColor: "#FFFFFF",
+                padding: "0.9em",
+                lineHeight: 0,
+              }}
+            >
             {/* eslint-disable-next-line @next/next/no-img-element -- data URL
                 générée côté serveur : rien à optimiser, rien à autoriser. */}
-            <img
-              src={qrDataUrl}
-              alt={`QR code d'inscription — ${merchantName}`}
-              style={{ width: "14.2em", height: "14.2em", display: "block" }}
-            />
+              <img
+                src={qrDataUrl}
+                alt={`QR code d'inscription — ${merchantName}`}
+                style={{ width: "11.6em", height: "11.6em", display: "block" }}
+              />
+            </div>
           </div>
 
           <p
