@@ -6,9 +6,9 @@ import { Wordmark } from "@/components/brand/logo";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; confirme?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, confirme } = await searchParams;
 
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-8 p-6">
@@ -24,6 +24,20 @@ export default async function LoginPage({
           Accédez à votre espace commerçant ou à votre carte de fidélité.
         </p>
       </div>
+
+      {/* Un lien de confirmation ne sert qu'une fois : arriver ici signifie
+          qu'il a expiré ou qu'il a déjà été utilisé. Dans les deux cas
+          l'adresse est probablement déjà confirmée — d'où le ton neutre. */}
+      {confirme === "expire" ? (
+        <p
+          role="status"
+          className="rounded-lg border border-line bg-surface-raised px-4 py-3 text-sm text-fg-soft"
+        >
+          Ce lien de confirmation n&apos;est plus valable — il a peut-être déjà
+          servi. Connectez-vous ci-dessous : si votre adresse est confirmée,
+          tout fonctionne normalement.
+        </p>
+      ) : null}
 
       <LoginForm next={next} />
 

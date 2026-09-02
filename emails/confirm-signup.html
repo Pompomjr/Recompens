@@ -16,7 +16,12 @@
   - le lien est répété en clair sous le bouton, pour les clients qui
     n'affichent pas les boutons et parce que ça rassure le lecteur méfiant
 
-  Variable Supabase disponible ici : {{ .ConfirmationURL }}
+  Le lien NE PASSE PAS par la variable {{ .ConfirmationURL }}, volontairement.
+  Celle-ci renvoie un code PKCE dont le vérificateur vit dans un cookie du
+  navigateur qui a servi à l'inscription — or ce mail s'ouvre le plus souvent
+  sur le téléphone, où ce cookie n'existe pas. Le lien est donc construit à la
+  main avec {{ .TokenHash }}, que /auth/confirm vérifie depuis n'importe quel
+  appareil, et qui ouvre la session directement sur le dashboard.
 -->
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f7f1e8; margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
   <tr>
@@ -54,7 +59,7 @@
             <table cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="background-color: #17140f;">
-                  <a href="{{ .ConfirmationURL }}"
+                  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup"
                      style="display: inline-block; padding: 16px 28px; font-size: 15px; font-weight: 700; letter-spacing: 1px; color: #efe4ce; text-decoration: none;">
                     CONFIRMER MON ADRESSE
                   </a>
@@ -71,7 +76,7 @@
               navigateur :
             </p>
             <p style="margin: 8px 0 0 0; font-size: 13px; line-height: 1.5; color: #a63a28; word-break: break-all;">
-              {{ .ConfirmationURL }}
+              {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup
             </p>
           </td>
         </tr>
