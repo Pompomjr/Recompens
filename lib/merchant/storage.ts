@@ -77,14 +77,26 @@ export async function uploadMerchantLogo(
       console.error(
         `[storage] envoi refusé : HTTP ${response.status} — ${detail}`
       );
-      // Le cas le plus probable, et le seul que le commerçant ne peut pas
-      // deviner : le bucket n'existe pas encore.
+
+      // Supabase répond 400 avec un 404 DANS le corps quand le bucket est
+      // introuvable. Se fier au seul statut HTTP faisait passer le cas le
+      // plus probable — et le seul que le commerçant ne peut pas deviner —
+      // pour une panne passagère, ce qui l'envoyait réessayer sans fin.
+      const bucketAbsent =
+        response.status === 404 ||
+        detail.includes("NoSuchBucket") ||
+        detail.includes("Bucket not found");
+
+      if (bucketAbsent) {
+        return {
+          ok: false,
+          message: `L'espace de stockage n'est pas configuré (bucket « ${LOGO_BUCKET} » introuvable). Prévenez-nous.`,
+        };
+      }
+
       return {
         ok: false,
-        message:
-          response.status === 404
-            ? "L'espace de stockage n'est pas encore configuré. Prévenez-nous."
-            : "L'envoi a échoué. Réessayez dans un instant.",
+        message: `L'envoi a échoué (erreur ${response.status}). Réessayez dans un instant.`,
       };
     }
 
