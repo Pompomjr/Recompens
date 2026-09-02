@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RegisterMerchantForm } from "./register-form";
+import { Wordmark } from "@/components/brand/logo";
 
 /**
  * cf SPEC §16 — page publique /register.
@@ -12,8 +13,12 @@ import { RegisterMerchantForm } from "./register-form";
 export default function RegisterPage() {
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-8 p-6">
+      <Link href="/" className="self-start">
+        <Wordmark className="text-lg" />
+      </Link>
+
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+        <h1 className="font-display text-2xl tracking-tight text-neutral-900">
           Créer mon compte commerçant
         </h1>
         <p className="text-sm text-neutral-600">

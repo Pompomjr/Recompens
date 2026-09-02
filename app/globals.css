@@ -36,6 +36,11 @@
   --color-paper-tint: var(--paper-tint);
   --color-ink: var(--ink);
 
+  --color-brand: #2fbf71;
+  --color-brand-dark: #1e8a50;
+
+  --font-brand: var(--font-brand);
+  --font-brand-stencil: var(--font-brand-stencil);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);

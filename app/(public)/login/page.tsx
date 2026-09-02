@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LoginForm } from "./login-form";
+import { Wordmark } from "@/components/brand/logo";
 
 // cf SPEC §16 — page publique /login (commerçant comme client).
 export default async function LoginPage({
@@ -11,8 +12,12 @@ export default async function LoginPage({
 
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-8 p-6">
+      <Link href="/" className="self-start">
+        <Wordmark className="text-lg" />
+      </Link>
+
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+        <h1 className="font-display text-2xl tracking-tight text-neutral-900">
           Connexion
         </h1>
         <p className="text-sm text-neutral-600">

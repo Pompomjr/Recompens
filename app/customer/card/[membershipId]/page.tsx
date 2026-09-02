@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db/prisma";
 import { generateCustomerQr } from "@/lib/qr/generate";
 import { getMembershipTransactions } from "@/lib/transactions/queries";
 import { LoyaltyCard } from "@/components/customer/loyalty-card";
+import { BrandMarkSolid } from "@/components/brand/logo";
 import { VesselCard } from "@/components/customer/vessel-card";
 import {
   formatDate,
@@ -133,6 +134,16 @@ export default async function CustomerCardPage({
           </ul>
         )}
       </section>
+
+      {/* Notre marque vit ICI, discrètement. La pastille en haut de la carte
+          appartient au commerce : c'est son identité que le client vient
+          chercher, pas la nôtre. */}
+      <footer className="flex items-center justify-center gap-2 pb-2">
+        <BrandMarkSolid size={16} />
+        <span className="font-mono text-[10px] tracking-[0.16em] text-paper/35">
+          PROPULSÉ PAR RECOMPENS
+        </span>
+      </footer>
     </main>
   );
 }

@@ -236,11 +236,33 @@ Deux univers volontairement distincts (cf SPEC §17) :
 - **Côté commerçant** — du noir et blanc. Il travaille avec, en vitesse,
   derrière un comptoir. Grosses cibles tactiles, aucune fantaisie.
 
+### La marque
+
+Trois formes, dans `components/brand/logo.tsx` :
+
+| Forme | Usage |
+| --- | --- |
+| `Wordmark` | Le mot complet, deux E ajourés en vert. Au-delà de ~120 px de large |
+| `BrandMark` | Pastille ronde, R ajouré. De 24 à 64 px |
+| `BrandMarkSolid` | Pastille au R **plein**. En dessous de 24 px |
+
+En dessous de 24 px les entailles se referment et la lettre devient une tache :
+la version simplifiée n'est pas une trahison du logo, c'est la seule façon de
+rester lisible sur un favicon.
+
+Vert `#2FBF71` sur fond sombre, `#1E8A50` sur fond clair — sinon il vibre.
+
+**La marque ne prend pas la place du commerce.** La pastille en haut de la
+carte client porte l'initiale du COMMERÇANT : c'est son identité que le client
+vient chercher. Recompens signe discrètement en pied de carte.
+
 ### Typographie
 
 Chargée par `next/font` dans `app/layout.tsx` : **Archivo Black** (titres et
 grands chiffres), **Instrument Sans** (texte), **IBM Plex Mono** (numéros de
-carte et libellés du ticket). Avant ça, `globals.css` référençait une variable
+carte et libellés du ticket), **Saira** et **Saira Stencil** (la marque, et
+elle seule — deux membres de la même famille, ce qui permet d'alterner lettres
+pleines et ajourées sans disloquer le mot). Avant ça, `globals.css` référençait une variable
 `--font-geist-sans` que rien ne chargeait : l'app s'affichait en Arial.
 
 ### Couleur par commerce
