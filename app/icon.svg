@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!--
+    Favicon : la pastille au R PLEIN.
+
+    Le R est dessiné en tracés, PAS en texte : un favicon ne charge aucune
+    police, un <text> s'afficherait donc avec la police du système — et
+    différemment sur chaque machine.
+
+    C'est aussi la version simplifiée du logo, celle prévue pour les tailles
+    où les entailles du R ajouré se refermeraient (cf components/brand/logo.tsx).
+  -->
+  <circle cx="32" cy="32" r="32" fill="#2FBF71" />
+
+  <g fill="#10331F">
+    <!-- Le jambage vertical -->
+    <rect x="17" y="15" width="9" height="34" />
+    <!-- La panse, pleine -->
+    <path d="M24 15 h13 a12 12 0 0 1 0 24 h-13 z" />
+    <!-- La jambe oblique -->
+    <path d="M31 37 h10 l8 12 h-11 z" />
+  </g>
+
+  <!-- Le contre-poinçon, percé dans la couleur du fond -->
+  <path d="M26 22 h11 a5 5 0 0 1 0 10 h-11 z" fill="#2FBF71" />
+</svg>
