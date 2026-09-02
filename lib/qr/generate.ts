@@ -11,9 +11,23 @@ import QRCode from "qrcode";
  *   jamais le membershipId "métier" ni le compteur.
  */
 
-export async function generateProgramJoinQr(programId: string, appUrl: string) {
+export async function generateProgramJoinQr(
+  programId: string,
+  appUrl: string,
+  /**
+   * Largeur du PNG. La valeur par défaut suffit à l'écran ; l'affichette
+   * demande beaucoup plus, sinon le QR imprimé est flou et devient pénible
+   * à scanner — c'est le seul geste que le client fait, il doit marcher du
+   * premier coup.
+   */
+  width?: number
+) {
   const joinUrl = `${appUrl}/join/${programId}`;
-  return QRCode.toDataURL(joinUrl, { errorCorrectionLevel: "M", margin: 2 });
+  return QRCode.toDataURL(joinUrl, {
+    errorCorrectionLevel: "M",
+    margin: 2,
+    ...(width ? { width } : {}),
+  });
 }
 
 export async function generateCustomerQr(qrToken: string) {

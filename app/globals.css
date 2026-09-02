@@ -312,3 +312,55 @@ body {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------
+   Impression de l'affichette de comptoir.
+
+   Le navigateur imprime la page entière : sans ces règles, le commerçant
+   sortirait son menu de navigation et ses boutons sur le papier. Tout ce
+   qui porte `data-hors-impression` disparaît, et l'affichette occupe seule
+   la feuille.
+
+   `@page` nommé plutôt qu'une règle unique : le format est choisi à
+   l'écran, et deux règles globales ne peuvent pas cohabiter. Les
+   navigateurs qui ignorent les pages nommées impriment simplement sur le
+   papier choisi dans la boîte de dialogue — l'affichette reste à sa taille
+   en millimètres, ce qui est le comportement acceptable.
+   --------------------------------------------------------------------- */
+@page a5 {
+  size: A5;
+  margin: 0;
+}
+
+@page a4 {
+  size: A4;
+  margin: 0;
+}
+
+.affiche--a5 {
+  page: a5;
+}
+
+.affiche--a4 {
+  page: a4;
+}
+
+@media print {
+  [data-hors-impression] {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #ffffff;
+  }
+
+  .affiche {
+    /* Les aplats de couleur ne s'impriment pas par défaut : sans ça, la
+       version couleur sortirait blanche et le QR flotterait dans le vide. */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    break-inside: avoid;
+    margin: 0;
+  }
+}

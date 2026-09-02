@@ -122,13 +122,25 @@ async function ProgramDetails({
           className="h-56 w-56 rounded-lg bg-surface-raised p-2"
         />
 
-        <a
-          href={qrDataUrl}
-          download={`qr-inscription-${program.id}.png`}
-          className="rounded-lg px-5 py-2.5 font-display text-sm tracking-[0.04em]" style={{ backgroundColor: "#2FBF71", color: "#10331F" }}
-        >
-          Télécharger le QR
-        </a>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          {/* L'affichette passe devant le QR nu : un commerçant qui imprime
+              un QR seul se retrouve à écrire au feutre ce qu'il donne. */}
+          <Link
+            href="/dashboard/program/affiche"
+            className="rounded-lg px-5 py-2.5 font-display text-sm tracking-[0.04em]"
+            style={{ backgroundColor: "#2FBF71", color: "#10331F" }}
+          >
+            IMPRIMER L&apos;AFFICHETTE
+          </Link>
+
+          <a
+            href={qrDataUrl}
+            download={`qr-inscription-${program.id}.png`}
+            className="rounded-lg border border-line px-5 py-2.5 font-display text-sm tracking-[0.04em] text-fg-soft"
+          >
+            Télécharger le QR seul
+          </a>
+        </div>
 
         <p className="w-full break-all text-center font-mono text-[11px] text-fg-faint">
           {joinUrl}
