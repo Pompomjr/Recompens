@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Wordmark, BrandMark } from "@/components/brand/logo";
 
 /**
@@ -9,7 +10,20 @@ import { Wordmark, BrandMark } from "@/components/brand/logo";
  * le client déjà inscrit, qui cherche sa carte. D'où les deux chemins, de
  * poids visuel différent.
  */
-export default function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ code?: string }>;
+}) {
+  // Les liens de confirmation partis avant la mise à jour du template
+  // atterrissent ici, sur l'URL du site, avec un code à échanger. On les
+  // renvoie vers la route qui sait ouvrir une session : sans ça, la personne
+  // voit la page d'accueil et croit que rien ne s'est passé.
+  const { code } = await searchParams;
+  if (code) {
+    redirect(`/auth/confirm?code=${encodeURIComponent(code)}`);
+  }
+
   return (
     <main className="flex flex-1 flex-col bg-ink text-paper">
       <header className="mx-auto flex w-full max-w-2xl items-center justify-between p-6">

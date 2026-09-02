@@ -17,11 +17,32 @@ import { createSupabaseServerClient } from "@/lib/auth/supabase-server";
  * vérificateur PKCE, lui, vit dans un cookie du navigateur d'origine — il
  * serait introuvable, et le lien échouerait sur l'appareil le plus courant.
  * `verifyOtp` ne dépend d'aucun cookie préalable et marche partout.
+ *
+ * La route accepte aussi un `code` PKCE, pour les mails déjà partis avec
+ * l'ancien lien. C'est un filet, pas le chemin nominal : il ne fonctionne que
+ * sur le navigateur qui a servi à l'inscription.
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const tokenHash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type") as EmailOtpType | null;
+
+  // Ancien format : Supabase a déjà vérifié l'adresse de son côté et nous
+  // repasse un code à échanger.
+  const code = url.searchParams.get("code");
+  if (!tokenHash && code) {
+    const supabase = await createSupabaseServerClient();
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (error) {
+      // Attendu si le mail a été ouvert sur un autre appareil que celui de
+      // l'inscription : le vérificateur PKCE n'y est pas.
+      console.error("[confirm] échange du code impossible:", error.code ?? error.message);
+      return NextResponse.redirect(new URL("/login?confirme=autre-appareil", url));
+    }
+
+    return NextResponse.redirect(new URL("/dashboard", url));
+  }
 
   if (!tokenHash || !type) {
     // Lien tronqué par le client mail, ou template pas encore à jour.

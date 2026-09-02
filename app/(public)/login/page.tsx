@@ -28,6 +28,17 @@ export default async function LoginPage({
       {/* Un lien de confirmation ne sert qu'une fois : arriver ici signifie
           qu'il a expiré ou qu'il a déjà été utilisé. Dans les deux cas
           l'adresse est probablement déjà confirmée — d'où le ton neutre. */}
+      {confirme === "autre-appareil" ? (
+        <p
+          role="status"
+          className="rounded-lg border border-line bg-surface-raised px-4 py-3 text-sm text-fg-soft"
+        >
+          Votre adresse est confirmée. Ce lien ayant été ouvert sur un autre
+          appareil que celui de l&apos;inscription, il reste à vous connecter
+          une fois.
+        </p>
+      ) : null}
+
       {confirme === "expire" ? (
         <p
           role="status"
