@@ -5,6 +5,7 @@ import { createSupabaseServerClient } from "./supabase-server";
 import { prisma } from "@/lib/db/prisma";
 import { loginSchema, registerMerchantSchema } from "@/lib/validation/auth";
 import { ROLE_HOME, type AppRole } from "./roles";
+import { deleteAuthUser } from "./admin";
 import type { AuthFormState } from "./form-state";
 
 /**
@@ -113,10 +114,18 @@ export async function registerMerchantAction(
       // ci-dessous est écrit pour un commerçant, pas pour un développeur.
       console.error("[register] création User + Merchant échouée:", error);
 
+      // On ANNULE le compte d'authentification qu'on vient de créer. Le
+      // laisser en place enfermerait la personne : la connexion répondrait
+      // « compte incomplet » et la réinscription « adresse déjà utilisée »,
+      // sans aucune issue. En le supprimant, l'adresse redevient libre et
+      // un simple nouvel essai suffit.
+      const annule = await deleteAuthUser(authUser.id);
+
       return {
         status: "error",
-        message:
-          "Le compte d'authentification a été créé mais pas le commerce. Contactez le support.",
+        message: annule
+          ? "La création a échoué. Réessayez — votre adresse reste disponible."
+          : "La création a échoué et n'a pas pu être annulée. Contactez le support.",
       };
     }
   }
@@ -166,10 +175,20 @@ export async function loginAction(
   if (!user) {
     // Compte Supabase sans enregistrement métier : état incohérent, on ferme
     // la session plutôt que de laisser passer un utilisateur sans rôle.
+    //
+    // Depuis l'annulation d'inscription (cf `deleteAuthUser`), cet état ne
+    // devrait plus survenir : une création qui échoue ne laisse plus de
+    // compte derrière elle. S'il apparaît quand même, la trace ci-dessous
+    // permet de le repérer dans les logs plutôt que de le découvrir par un
+    // commerçant bloqué.
+    console.error(
+      `[login] compte d'authentification sans enregistrement métier: ${data.user.id}`
+    );
     await supabase.auth.signOut();
     return {
       status: "error",
-      message: "Ce compte est incomplet. Contactez le support.",
+      message:
+        "Ce compte n'est rattaché à aucun commerce. Créez-en un depuis la page d'inscription, ou contactez le support.",
     };
   }
 

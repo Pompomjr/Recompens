@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import { createSupabaseServerClient } from "@/lib/auth/supabase-server";
 import { getCurrentUser } from "@/lib/auth/session";
+import { deleteAuthUser } from "@/lib/auth/admin";
 import { joinProgramSchema } from "@/lib/validation/customer";
 import type { FormState } from "@/lib/forms/state";
 
@@ -120,8 +121,15 @@ export async function joinProgramAction(
       include: { customer: { include: { memberships: true } } },
     });
     membershipId = user.customer!.memberships[0].id;
-  } catch {
+  } catch (error) {
+    console.error("[join] création User + Customer + carte échouée:", error);
+
+    // Même principe que pour le commerçant : on annule la session anonyme
+    // qu'on vient d'ouvrir, sinon elle reste orpheline en base
+    // d'authentification, sans carte associée.
     await supabase.auth.signOut();
+    await deleteAuthUser(data.user.id);
+
     return {
       status: "error",
       message:

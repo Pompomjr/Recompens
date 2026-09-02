@@ -359,6 +359,11 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
   id produit un enregistrement orphelin, que plus rien ne rattache au vrai
   compte — la connexion échoue alors définitivement. `registerMerchantAction`
   teste donc `identities.length === 0` avant toute écriture.
+- Une inscription qui échoue à mi-chemin est **annulée** : si le compte
+  Supabase est créé mais que l'écriture en base échoue, `deleteAuthUser()`
+  supprime le compte. Sans ça, la personne est enfermée — la connexion répond
+  « compte incomplet », la réinscription « adresse déjà utilisée », et il n'y
+  a plus d'issue. C'est arrivé en vrai.
 - `User.id` est **l'id Supabase Auth** : c'est la jointure utilisée par
   `getCurrentUser()`. L'inscription crée le compte Supabase puis `User` +
   `Merchant` dans une seule écriture Prisma imbriquée (donc une transaction).
