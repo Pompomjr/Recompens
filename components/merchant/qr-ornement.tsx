@@ -9,6 +9,11 @@ import type { VesselShape } from "@prisma/client";
  * l'affichette et la carte racontent donc la même histoire, et accueillir un
  * nouveau commerce ne demande aucun dessin supplémentaire.
  *
+ * Sans silhouette, PAS de décor. Le repli sur le logo en filigrane a été
+ * essayé puis retiré : appliqué à tout le monde par défaut, il habillait des
+ * affichettes qui n'avaient rien demandé. Ce sera un choix par commerce, pas
+ * une valeur par défaut.
+ *
  * ⚠️ RÈGLE INTANGIBLE : le décor n'entre JAMAIS dans la zone de silence du QR.
  * Un code a besoin d'une marge blanche vide sur ses quatre côtés — c'est là
  * que le lecteur trouve ses bords. Le QR garde donc sa plaque blanche, posée
@@ -25,11 +30,9 @@ const CAFE = "#4A2C15";
 
 export function QrOrnement({
   shape,
-  logoUrl,
   accent,
 }: {
   shape: VesselShape | null;
-  logoUrl: string | null;
   /** Couleur du commerce, pour les filets. */
   accent: string;
 }) {
@@ -134,22 +137,6 @@ export function QrOrnement({
     );
   }
 
-  // Aucune silhouette : le logo du commerce en filigrane. Marche pour
-  // n'importe quel métier, sans une ligne de dessin de plus.
-  if (logoUrl) {
-    return (
-      <div style={{ ...cadre, width: "21em", height: "21em", opacity: 0.13 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element -- adresse saisie
-            en base : la passer à l'optimiseur imposerait de déclarer chaque
-            domaine dans next.config. */}
-        <img
-          src={logoUrl}
-          alt=""
-          style={{ width: "100%", height: "100%", objectFit: "contain" }}
-        />
-      </div>
-    );
-  }
-
+  // Aucune silhouette : rien autour du QR.
   return null;
 }

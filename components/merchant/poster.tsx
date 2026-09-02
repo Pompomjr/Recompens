@@ -246,11 +246,7 @@ export function Poster({
               height: "20.5em",
             }}
           >
-            <QrOrnement
-              shape={vesselShape}
-              logoUrl={logoUrl}
-              accent={accent}
-            />
+            <QrOrnement shape={vesselShape} accent={accent} />
 
             {/* La plaque blanche est la zone de silence du QR : elle passe
                 TOUJOURS au-dessus du décor, jamais l'inverse. */}
