@@ -18,9 +18,12 @@
  * dépend d'aucune configuration extérieure au code.
  */
 
-/** Bucket public à créer dans Supabase. Public : ces logos sont affichés à
- *  des clients non authentifiés, sur la carte comme sur l'affichette. */
-export const LOGO_BUCKET = "logos";
+/**
+ * Nom EXACT du bucket créé dans Supabase — la casse compte. Il est public
+ * parce que ces logos sont affichés à des clients non authentifiés, sur la
+ * carte comme sur l'affichette.
+ */
+export const LOGO_BUCKET = "Logo";
 
 /** 2 Mo. Un logo de commerce pèse quelques dizaines de Ko ; au-delà, c'est
  *  une photo envoyée par erreur, et elle serait chargée en 4G au comptoir. */
