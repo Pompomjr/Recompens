@@ -338,6 +338,14 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
 
 ### Améliorations identifiées
 
+- [ ] **« Ajouter à l'écran d'accueil »** proposé juste après la création de
+      la carte. Aujourd'hui, un client qui ferme l'onglet n'a qu'une façon de
+      retrouver sa carte : retourner en boutique et rescanner le QR du
+      comptoir. Chez lui, il ne peut pas consulter son compteur.
+- [ ] **L'affichette de comptoir** est la vraie surface de marque du produit :
+      c'est elle que des centaines de gens verront, pas le site. À concevoir
+      avec autant de soin que la carte.
+
 - [ ] **Écran d'administration** (§3 rôle ADMIN, §16 `/admin`) — réglerait
       notamment le délai anti-cumul sans passer par le Table Editor.
 - [ ] **Récupération d'une carte perdue.** L'identité client tient à un
