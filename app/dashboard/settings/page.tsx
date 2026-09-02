@@ -34,8 +34,6 @@ export default async function SettingsPage() {
 
       <LogoForm merchantName={merchant.name} logoUrl={logoUrl} />
 
-      <PasswordForm />
-
       {logoUrl ? (
         <form action={removeMerchantLogoAction}>
           <button
@@ -46,6 +44,9 @@ export default async function SettingsPage() {
           </button>
         </form>
       ) : null}
+
+      <PasswordForm />
+
     </main>
   );
 }
