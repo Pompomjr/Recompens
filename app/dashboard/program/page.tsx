@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db/prisma";
 import { generateProgramJoinQr } from "@/lib/qr/generate";
 import { getAppUrl } from "@/lib/app-url";
 import { ProgramForm } from "@/components/merchant/program-form";
+import { ProgramEditForm } from "@/components/merchant/program-edit-form";
 import { formatVisits } from "@/lib/format";
 
 /**
@@ -87,6 +88,22 @@ async function ProgramDetails({
           </span>
         </div>
       </section>
+
+      {!program.active ? (
+        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
+          Ce programme est arrêté : plus personne ne peut s&apos;inscrire ni
+          valider de visite. Les cartes de vos clients sont conservées et
+          repartiront dès que vous le réactiverez.
+        </p>
+      ) : null}
+
+      <ProgramEditForm
+        programId={program.id}
+        name={program.name}
+        visitsRequired={program.visitsRequired}
+        rewardName={program.rewardName}
+        active={program.active}
+      />
 
       <section className="flex flex-col items-center gap-4 rounded-xl border border-neutral-200 bg-white p-5">
         <h2 className="self-start font-semibold text-neutral-900">

@@ -2,6 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db/prisma";
 import { addVisit, redeemReward } from "@/lib/loyalty/visit";
 import { findMembershipByQrToken } from "@/lib/loyalty/scan";
+import { updateProgram } from "@/lib/programs/update";
 import { ForbiddenError } from "@/lib/auth/session";
 
 /**
@@ -390,6 +391,100 @@ describe("SPEC §13 et §18 — récompense utilisable une seule fois", () => {
       redeemReward({
         merchantId: fixture.merchantId,
         membershipId: fixture.membershipId,
+        createdByUserId: fixture.ownerUserId,
+      })
+    ).rejects.toBeInstanceOf(ForbiddenError);
+  });
+});
+
+describe("SPEC §7 — modification d'un programme", () => {
+  const baseArgs = () => ({
+    name: "Programme de test",
+    rewardName: "1 café offert",
+    active: true,
+  });
+
+  it("refuse la modification d'un programme d'un autre commerce", async () => {
+    await expect(
+      updateProgram({
+        merchantId: fixture.otherMerchantId,
+        programId: fixture.programId,
+        visitsRequired: 99,
+        ...baseArgs(),
+      })
+    ).rejects.toBeInstanceOf(ForbiddenError);
+
+    const inchange = await prisma.loyaltyProgram.findUnique({
+      where: { id: fixture.programId },
+    });
+    expect(inchange!.visitsRequired).toBe(VISITS_REQUIRED);
+  });
+
+  it("débloque la récompense des cartes ayant déjà atteint le nouveau seuil", async () => {
+    await prisma.loyaltyMembership.update({
+      where: { id: fixture.membershipId },
+      data: { visitCount: 2, rewardAvailable: false },
+    });
+
+    const result = await updateProgram({
+      merchantId: fixture.merchantId,
+      programId: fixture.programId,
+      visitsRequired: 2,
+      ...baseArgs(),
+    });
+
+    expect(result.rewardsUnlocked).toBe(1);
+
+    const carte = await prisma.loyaltyMembership.findUnique({
+      where: { id: fixture.membershipId },
+    });
+    expect(carte!.rewardAvailable).toBe(true);
+  });
+
+  it("ne reprend JAMAIS une récompense déjà gagnée quand le seuil monte", async () => {
+    await prisma.loyaltyMembership.update({
+      where: { id: fixture.membershipId },
+      data: { visitCount: 3, rewardAvailable: true },
+    });
+
+    await updateProgram({
+      merchantId: fixture.merchantId,
+      programId: fixture.programId,
+      visitsRequired: 50,
+      ...baseArgs(),
+    });
+
+    const carte = await prisma.loyaltyMembership.findUnique({
+      where: { id: fixture.membershipId },
+    });
+    expect(carte!.rewardAvailable).toBe(true);
+  });
+
+  it("arrête le programme sans supprimer les cartes", async () => {
+    await updateProgram({
+      merchantId: fixture.merchantId,
+      programId: fixture.programId,
+      visitsRequired: VISITS_REQUIRED,
+      ...baseArgs(),
+      active: false,
+    });
+
+    const programme = await prisma.loyaltyProgram.findUnique({
+      where: { id: fixture.programId },
+    });
+    expect(programme!.active).toBe(false);
+
+    // La carte existe toujours : arrêter n'est pas supprimer.
+    const carte = await prisma.loyaltyMembership.findUnique({
+      where: { id: fixture.membershipId },
+    });
+    expect(carte).not.toBeNull();
+
+    // Et plus aucune visite ne peut être validée (cf addVisit).
+    await expect(
+      addVisit({
+        merchantId: fixture.merchantId,
+        qrToken: fixture.qrToken,
         createdByUserId: fixture.ownerUserId,
       })
     ).rejects.toBeInstanceOf(ForbiddenError);

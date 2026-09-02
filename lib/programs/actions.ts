@@ -3,9 +3,13 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
-import { requireMerchant } from "@/lib/auth/session";
-import { createProgramSchema } from "@/lib/validation/program";
+import { requireMerchant, ForbiddenError } from "@/lib/auth/session";
+import {
+  createProgramSchema,
+  updateProgramSchema,
+} from "@/lib/validation/program";
 import { DEFAULT_MIN_MINUTES_BETWEEN_VISITS } from "@/lib/loyalty/config";
+import { updateProgram } from "./update";
 import type { FormState } from "@/lib/forms/state";
 
 /**
@@ -63,4 +67,63 @@ export async function createProgramAction(
   revalidatePath("/dashboard/program");
 
   redirect("/dashboard/program");
+}
+
+/**
+ * Modification d'un programme.
+ *
+ * Le programme est retrouvé par son id, mais on vérifie ensuite qu'il
+ * appartient bien au commerce authentifié (cf SPEC §18) : sans ce contrôle,
+ * un commerçant pourrait modifier les règles d'un concurrent en changeant un
+ * identifiant dans le formulaire.
+ *
+ * Effet de bord assumé : changer le nombre de visites requis touche les
+ * cartes DÉJÀ en cours. La règle retenue est écrite dans `syncRewards()`.
+ */
+export async function updateProgramAction(
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const { merchant } = await requireMerchant();
+
+  const programId = formData.get("programId");
+  if (typeof programId !== "string" || !programId) {
+    return { status: "error", message: "Programme introuvable." };
+  }
+
+  const parsed = updateProgramSchema.safeParse({
+    name: formData.get("name"),
+    visitsRequired: formData.get("visitsRequired"),
+    rewardName: formData.get("rewardName"),
+    active: formData.get("active") === "on",
+  });
+
+  if (!parsed.success) {
+    return { status: "error", message: parsed.error.issues[0].message };
+  }
+
+  try {
+    await updateProgram({
+      merchantId: merchant.id,
+      programId,
+      name: parsed.data.name,
+      visitsRequired: parsed.data.visitsRequired,
+      rewardName: parsed.data.rewardName,
+      active: parsed.data.active,
+    });
+  } catch (error) {
+    if (error instanceof ForbiddenError) {
+      return { status: "error", message: error.message };
+    }
+    console.error("[programme] modification échouée:", error);
+    return {
+      status: "error",
+      message: "La modification a échoué. Réessayez.",
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/program");
+
+  return { status: "idle" };
 }

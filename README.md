@@ -306,9 +306,15 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
 
 ### Bloquant pour un usage réel
 
-- [ ] **Modifier un programme après création.** Aujourd'hui un commerçant qui
-      se trompe de récompense ou de nombre de visites est coincé : ni édition
-      ni suppression. C'est la limite la plus gênante du MVP.
+- [x] **Modifier un programme après création** — `lib/programs/update.ts`,
+      formulaire replié sur `/dashboard/program`. Un programme s'ARRÊTE
+      (`active = false`) mais ne se supprime pas : la suppression emporterait
+      les cartes et l'historique de tous ses clients.
+      Règle sur le seuil : on peut **débloquer** une récompense, jamais en
+      retirer une. Relever le seuil ne reprend pas ce qu'un client a gagné.
+- [ ] **Mot de passe oublié.** Aucun écran, et le mail de réinitialisation
+      passerait par le service Supabase saturé. Un commerçant qui perd son
+      mot de passe est bloqué. Se réglera avec l'envoi des mails.
 - [ ] **Envoi des mails.** Le service intégré de Supabase est limité à
       quelques mails par heure et part en indésirables. Il faut un SMTP
       externe (Resend si domaine, Brevo sinon). Dépend du choix du nom.

@@ -27,3 +27,17 @@ export const createProgramSchema = z.object({
 });
 
 export type CreateProgramInput = z.infer<typeof createProgramSchema>;
+
+/**
+ * Modification d'un programme existant (§7 ne le prévoyait pas, mais un
+ * commerçant qui se trompe de récompense doit pouvoir se corriger).
+ *
+ * `active` permet d'arrêter un programme sans le supprimer : la suppression
+ * emporterait les cartes et l'historique de tous ses clients, ce qu'aucun
+ * commerçant ne devrait pouvoir faire d'un clic.
+ */
+export const updateProgramSchema = createProgramSchema.extend({
+  active: z.coerce.boolean(),
+});
+
+export type UpdateProgramInput = z.infer<typeof updateProgramSchema>;
