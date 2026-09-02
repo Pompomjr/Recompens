@@ -23,6 +23,8 @@
  * parce que ces logos sont affichés à des clients non authentifiés, sur la
  * carte comme sur l'affichette.
  */
+import { adminConfig } from "@/lib/supabase/admin-config";
+
 export const LOGO_BUCKET = "Logo";
 
 /** 2 Mo. Un logo de commerce pèse quelques dizaines de Ko ; au-delà, c'est
@@ -43,13 +45,9 @@ export async function uploadMerchantLogo(
   merchantId: string,
   file: File
 ): Promise<Resultat> {
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!base || !serviceKey) {
-    console.error("[storage] configuration Supabase absente");
-    return { ok: false, message: "Envoi impossible pour le moment." };
-  }
+  const config = adminConfig();
+  if (!config.ok) return { ok: false, message: config.message };
+  const { base, serviceKey } = config;
 
   // Chemin sans extension : le type est porté par `content-type`. Un même
   // commerce écrase donc toujours son propre fichier, sans laisser d'orphelin
@@ -121,9 +119,9 @@ export async function uploadMerchantLogo(
  * resté sur le stockage n'est visible de personne.
  */
 export async function deleteMerchantLogo(merchantId: string): Promise<void> {
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!base || !serviceKey) return;
+  const config = adminConfig();
+  if (!config.ok) return;
+  const { base, serviceKey } = config;
 
   try {
     await fetch(

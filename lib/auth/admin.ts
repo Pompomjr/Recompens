@@ -20,16 +20,16 @@
  *
  * Retourne `true` si le compte n'existe plus après l'appel.
  */
-export async function deleteAuthUser(userId: string): Promise<boolean> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+import { adminConfig } from "@/lib/supabase/admin-config";
 
-  if (!url || !serviceKey) {
-    console.error(
-      "[admin] SUPABASE_SERVICE_ROLE_KEY absente : impossible d'annuler l'inscription"
-    );
-    return false;
-  }
+export async function deleteAuthUser(userId: string): Promise<boolean> {
+  // Même validation que pour le stockage : une clé copiée abrégée ferait
+  // échouer l'annulation d'inscription avec une exception incompréhensible,
+  // et laisserait la personne dans l'impasse que cette fonction existe
+  // précisément pour éviter.
+  const config = adminConfig();
+  if (!config.ok) return false;
+  const { base: url, serviceKey } = config;
 
   try {
     const response = await fetch(`${url}/auth/v1/admin/users/${userId}`, {
