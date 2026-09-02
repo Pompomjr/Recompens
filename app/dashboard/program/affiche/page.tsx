@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db/prisma";
 import { generateProgramJoinQr } from "@/lib/qr/generate";
 import { getAppUrl } from "@/lib/app-url";
 import { cardTheme } from "@/lib/theme";
+import { safeLogoUrl } from "@/lib/merchant/logo";
 import { Poster } from "@/components/merchant/poster";
 
 /**
@@ -67,6 +68,7 @@ export default async function AffichePage() {
 
       <Poster
         merchantName={merchant.name}
+        logoUrl={safeLogoUrl(merchant.logoUrl)}
         visitsRequired={program.visitsRequired}
         rewardName={program.rewardName}
         qrDataUrl={qrDataUrl}

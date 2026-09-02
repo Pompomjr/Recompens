@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db/prisma";
 import { generateCustomerQr } from "@/lib/qr/generate";
 import { getMembershipTransactions } from "@/lib/transactions/queries";
 import { LoyaltyCard } from "@/components/customer/loyalty-card";
+import { safeLogoUrl } from "@/lib/merchant/logo";
 import { BrandMarkSolid } from "@/components/brand/logo";
 import { VesselCard } from "@/components/customer/vessel-card";
 import {
@@ -75,6 +76,7 @@ export default async function CustomerCardPage({
       {merchant.cardStyle === "VESSEL" && merchant.vesselShape ? (
         <VesselCard
           merchantName={merchant.name}
+          logoUrl={safeLogoUrl(merchant.logoUrl)}
           brandColor={merchant.brandColor}
           shape={merchant.vesselShape}
           visitCount={membership.visitCount}
@@ -87,6 +89,7 @@ export default async function CustomerCardPage({
       ) : (
         <LoyaltyCard
           merchantName={merchant.name}
+          logoUrl={safeLogoUrl(merchant.logoUrl)}
           brandColor={merchant.brandColor}
           firstName={customer.firstName}
           cardNumber={membership.id.slice(0, 4).toUpperCase()}

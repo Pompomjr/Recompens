@@ -1,4 +1,5 @@
 import { cardTheme } from "@/lib/theme";
+import { MerchantLogo } from "@/components/merchant/merchant-logo";
 import { visitsLabel } from "@/lib/format";
 import { CardQr } from "./card-qr";
 
@@ -15,6 +16,7 @@ import { CardQr } from "./card-qr";
  */
 export function LoyaltyCard({
   merchantName,
+  logoUrl,
   brandColor,
   firstName,
   cardNumber,
@@ -27,6 +29,8 @@ export function LoyaltyCard({
   justStamped,
 }: {
   merchantName: string;
+  /** Logo du commerce, ou null : la pastille retombe sur l'initiale. */
+  logoUrl: string | null;
   brandColor: string | null;
   firstName: string;
   cardNumber: string;
@@ -63,13 +67,14 @@ export function LoyaltyCard({
             </span>
           </div>
 
-          <div
-            className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 font-display text-lg text-ink"
-            style={{ borderColor: "var(--ink)" }}
-            aria-hidden
-          >
-            {merchantName.trim().charAt(0).toUpperCase()}
-          </div>
+          <MerchantLogo
+            name={merchantName}
+            logoUrl={logoUrl}
+            size={48}
+            color="var(--ink)"
+            border="var(--ink)"
+            className="font-display"
+          />
         </div>
 
         <div className="flex items-center justify-between font-mono text-[11px] tracking-[0.09em] text-[color:var(--ink-soft)]">

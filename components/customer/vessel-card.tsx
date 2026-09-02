@@ -10,6 +10,7 @@ import {
   type StackSpec,
 } from "@/lib/loyalty/vessels";
 import { CardQr } from "./card-qr";
+import { MerchantLogo } from "@/components/merchant/merchant-logo";
 
 /**
  * La carte de fidélité, style « Contenant » (cf maquettes).
@@ -26,6 +27,7 @@ import { CardQr } from "./card-qr";
  */
 export function VesselCard({
   merchantName,
+  logoUrl,
   brandColor,
   shape,
   visitCount,
@@ -36,6 +38,8 @@ export function VesselCard({
   justStamped,
 }: {
   merchantName: string;
+  /** Logo du commerce, ou null : la pastille retombe sur l'initiale. */
+  logoUrl: string | null;
   brandColor: string | null;
   shape: VesselShape;
   visitCount: number;
@@ -59,13 +63,14 @@ export function VesselCard({
       ) : null}
 
       <header className="relative flex items-center gap-3">
-        <span
-          className="flex size-10 shrink-0 items-center justify-center rounded-full font-display text-base"
-          style={{ backgroundColor: spec.accent, color: ink }}
-          aria-hidden
-        >
-          {merchantName.trim().charAt(0).toUpperCase()}
-        </span>
+        <MerchantLogo
+          name={merchantName}
+          logoUrl={logoUrl}
+          size={40}
+          color={ink}
+          background={spec.accent}
+          className="font-display"
+        />
         <span className="font-display text-xl leading-none tracking-tight">
           {merchantName}
         </span>

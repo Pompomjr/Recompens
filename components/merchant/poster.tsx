@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { BrandMarkSolid } from "@/components/brand/logo";
+import { MerchantLogo } from "@/components/merchant/merchant-logo";
 import { formatVisits } from "@/lib/format";
 
 /**
@@ -39,6 +40,7 @@ const FORMATS: Record<Format, { largeur: string; hauteur: string; base: string; 
 
 export function Poster({
   merchantName,
+  logoUrl,
   visitsRequired,
   rewardName,
   qrDataUrl,
@@ -46,6 +48,8 @@ export function Poster({
   onInk,
 }: {
   merchantName: string;
+  /** Logo du commerce. Absent, l'affichette s'ouvre directement sur le nom. */
+  logoUrl: string | null;
   visitsRequired: number;
   rewardName: string;
   qrDataUrl: string;
@@ -132,6 +136,18 @@ export function Poster({
             boxSizing: "border-box",
           }}
         >
+          {/* Le logo remplace l'étiquette en haut d'affiche : c'est lui que
+              le client reconnaît de loin, mieux qu'un intertitre. */}
+          {logoUrl ? (
+            <MerchantLogo
+              name={merchantName}
+              logoUrl={logoUrl}
+              size="4.4em"
+              color={texte}
+              style={{ marginBottom: "0.8em" }}
+            />
+          ) : null}
+
           <p
             style={{
               margin: 0,

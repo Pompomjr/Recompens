@@ -7,6 +7,8 @@ import {
 } from "@/lib/auth/session";
 import { logoutAction } from "@/lib/auth/actions";
 import { BrandMarkSolid } from "@/components/brand/logo";
+import { MerchantLogo } from "@/components/merchant/merchant-logo";
+import { safeLogoUrl } from "@/lib/merchant/logo";
 
 /**
  * Barrière d'accès réelle de l'espace commerçant (cf SPEC §16).
@@ -26,10 +28,12 @@ export default async function DashboardLayout({
   children,
 }: LayoutProps<"/dashboard">) {
   let merchantName: string;
+  let merchantLogo: string | null;
 
   try {
     const { merchant } = await requireMerchant();
     merchantName = merchant.name;
+    merchantLogo = safeLogoUrl(merchant.logoUrl);
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       redirect("/login?next=/dashboard");
@@ -43,7 +47,15 @@ export default async function DashboardLayout({
   return (
     <div className="flex min-h-full flex-1 flex-col bg-surface text-fg">
       <header className="mx-auto flex w-full max-w-2xl items-center justify-between gap-4 border-b border-line px-5 py-4">
-        <Link href="/dashboard">
+        <Link href="/dashboard" className="flex items-center gap-2.5">
+          <MerchantLogo
+            name={merchantName}
+            logoUrl={merchantLogo}
+            size={28}
+            color="var(--fg-soft)"
+            border="var(--line)"
+            className="font-display"
+          />
           <span className="font-display text-[15px] tracking-tight text-fg">
             {merchantName}
           </span>
