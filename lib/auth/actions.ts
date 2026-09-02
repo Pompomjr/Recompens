@@ -8,6 +8,7 @@ import {
   registerMerchantSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  changePasswordSchema,
 } from "@/lib/validation/auth";
 import { getAppUrl } from "@/lib/app-url";
 import { ROLE_HOME, type AppRole } from "./roles";
@@ -329,4 +330,63 @@ export async function updatePasswordAction(
 
   const record = await prisma.user.findUnique({ where: { id: user.id } });
   redirect(record ? ROLE_HOME[record.role] : "/login");
+}
+
+/**
+ * Changement de mot de passe depuis l'espace connecté.
+ *
+ * Le mot de passe actuel est vérifié en le rejouant contre Supabase — c'est
+ * le seul moyen d'en prouver la connaissance, l'API ne proposant pas de
+ * vérification dédiée. `signInWithPassword` rafraîchit la session au passage,
+ * ce qui est sans conséquence : c'est la même personne, sur le même appareil.
+ */
+export async function changePasswordAction(
+  _prevState: AuthFormState,
+  formData: FormData
+): Promise<AuthFormState> {
+  const parsed = changePasswordSchema.safeParse({
+    actuel: formData.get("actuel"),
+    password: formData.get("password"),
+    confirmation: formData.get("confirmation"),
+  });
+
+  if (!parsed.success) {
+    return { status: "error", message: parsed.error.issues[0].message };
+  }
+
+  const supabase = await createSupabaseServerClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user?.email) {
+    return {
+      status: "error",
+      message: "Votre session a expiré. Reconnectez-vous.",
+    };
+  }
+
+  const { error: erreurActuel } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: parsed.data.actuel,
+  });
+
+  if (erreurActuel) {
+    return { status: "error", message: "Mot de passe actuel incorrect." };
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: parsed.data.password,
+  });
+
+  if (error) {
+    console.error("[mot de passe] changement refusé:", error.code ?? error.message);
+    return {
+      status: "error",
+      message: "Le changement a échoué. Réessayez dans un instant.",
+    };
+  }
+
+  return { status: "sent", message: "Mot de passe modifié." };
 }

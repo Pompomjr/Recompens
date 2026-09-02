@@ -43,6 +43,32 @@ export const registerMerchantSchema = z
     path: ["confirmation"],
   });
 
+/**
+ * Changement de mot de passe depuis l'espace connecté.
+ *
+ * Le mot de passe ACTUEL est exigé, alors que Supabase ne le demande pas.
+ * Sans lui, quiconque trouve une session ouverte — un ordinateur d'arrière-
+ * boutique, un employé qui part — s'approprie le compte en deux clics. Le
+ * coût pour le commerçant légitime est d'un champ ; le coût de son absence
+ * est la perte du commerce.
+ */
+export const changePasswordSchema = z
+  .object({
+    actuel: z.string().min(1, "Mot de passe actuel requis"),
+    password: z
+      .string()
+      .min(8, "Le nouveau mot de passe doit contenir au moins 8 caractères"),
+    confirmation: z.string(),
+  })
+  .refine((data) => data.password === data.confirmation, {
+    message: "Les deux mots de passe ne correspondent pas",
+    path: ["confirmation"],
+  })
+  .refine((data) => data.password !== data.actuel, {
+    message: "Le nouveau mot de passe doit être différent de l'ancien",
+    path: ["password"],
+  });
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterMerchantInput = z.infer<typeof registerMerchantSchema>;
 

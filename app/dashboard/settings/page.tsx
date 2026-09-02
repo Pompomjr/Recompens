@@ -3,6 +3,7 @@ import { requireMerchant } from "@/lib/auth/session";
 import { safeLogoUrl } from "@/lib/merchant/logo";
 import { removeMerchantLogoAction } from "@/lib/merchant/actions";
 import { LogoForm } from "@/components/merchant/logo-form";
+import { PasswordForm } from "@/components/merchant/password-form";
 
 // cf SPEC §6 — paramètres du commerce.
 export default async function SettingsPage() {
@@ -32,6 +33,8 @@ export default async function SettingsPage() {
       </section>
 
       <LogoForm merchantName={merchant.name} logoUrl={logoUrl} />
+
+      <PasswordForm />
 
       {logoUrl ? (
         <form action={removeMerchantLogoAction}>
