@@ -17,25 +17,25 @@ export default async function LoginPage({
       </Link>
 
       <div className="flex flex-col gap-2">
-        <h1 className="font-display text-2xl tracking-tight text-neutral-900">
+        <h1 className="font-display text-2xl tracking-tight text-fg">
           Connexion
         </h1>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-fg-soft">
           Accédez à votre espace commerçant ou à votre carte de fidélité.
         </p>
       </div>
 
       <LoginForm next={next} />
 
-      <p className="text-center text-sm text-neutral-600">
-        <Link href="/forgot-password" className="font-medium underline">
+      <p className="text-center text-sm text-fg-soft">
+        <Link href="/forgot-password" className="font-medium text-brand underline">
           Mot de passe oublié ?
         </Link>
       </p>
 
-      <p className="text-center text-sm text-neutral-600">
+      <p className="text-center text-sm text-fg-soft">
         Vous êtes commerçant et n&apos;avez pas encore de compte ?{" "}
-        <Link href="/register" className="font-medium underline">
+        <Link href="/register" className="font-medium text-brand underline">
           Créer mon compte
         </Link>
       </p>

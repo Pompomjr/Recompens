@@ -21,16 +21,16 @@ export default async function HistoryPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 p-5">
-      <Link href="/dashboard" className="text-sm text-neutral-500 underline">
-        ← Retour au dashboard
+      <Link href="/dashboard" className="font-mono text-[11px] tracking-[0.16em] text-fg-faint underline">
+        ← RETOUR AU DASHBOARD
       </Link>
 
-      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+      <h1 className="font-display text-2xl tracking-tight text-fg">
         Historique
       </h1>
 
       {transactions.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-neutral-300 p-5 text-sm text-neutral-500">
+        <p className="rounded-xl border border-dashed border-line p-5 text-sm text-fg-faint">
           Aucune opération pour le moment. Chaque visite validée et chaque
           récompense remise apparaîtra ici.
         </p>
@@ -42,16 +42,16 @@ export default async function HistoryPage() {
             {transactions.map((transaction) => (
               <li
                 key={transaction.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white p-4"
+                className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface-raised p-4"
               >
                 <span className="flex flex-col gap-0.5">
-                  <span className="font-medium text-neutral-900">
+                  <span className="font-medium text-fg">
                     {transaction.membership.customer.firstName}
                   </span>
-                  <span className="text-sm text-neutral-500">
+                  <span className="text-sm text-fg-faint">
                     {formatTransactionType(transaction.type)}
                   </span>
-                  <span className="text-xs text-neutral-400">
+                  <span className="text-xs text-fg-faint">
                     {formatDate(transaction.createdAt)} à{" "}
                     {formatTime(transaction.createdAt)}
                   </span>
@@ -59,8 +59,8 @@ export default async function HistoryPage() {
                 <span
                   className={`text-lg font-semibold tabular-nums ${
                     transaction.visitDelta > 0
-                      ? "text-neutral-900"
-                      : "text-amber-700"
+                      ? "text-fg"
+                      : "text-amber-300"
                   }`}
                 >
                   {formatVisitDelta(transaction.visitDelta)}
@@ -69,9 +69,9 @@ export default async function HistoryPage() {
             ))}
           </ul>
 
-          <div className="hidden overflow-x-auto rounded-xl border border-neutral-200 bg-white sm:block">
+          <div className="hidden overflow-x-auto rounded-xl border border-line bg-surface-raised sm:block">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-neutral-200 text-xs font-medium text-neutral-500">
+              <thead className="border-b border-line font-mono text-[10px] uppercase tracking-[0.12em] text-fg-faint">
                 <tr>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3">Heure</th>
@@ -84,25 +84,25 @@ export default async function HistoryPage() {
                 {transactions.map((transaction) => (
                   <tr
                     key={transaction.id}
-                    className="border-b border-neutral-100 last:border-0"
+                    className="border-b border-line/60 last:border-0"
                   >
-                    <td className="px-4 py-3 tabular-nums text-neutral-600">
+                    <td className="px-4 py-3 tabular-nums text-fg-soft">
                       {formatDate(transaction.createdAt)}
                     </td>
-                    <td className="px-4 py-3 tabular-nums text-neutral-600">
+                    <td className="px-4 py-3 tabular-nums text-fg-soft">
                       {formatTime(transaction.createdAt)}
                     </td>
-                    <td className="px-4 py-3 font-medium text-neutral-900">
+                    <td className="px-4 py-3 font-medium text-fg">
                       {transaction.membership.customer.firstName}
                     </td>
-                    <td className="px-4 py-3 text-neutral-600">
+                    <td className="px-4 py-3 text-fg-soft">
                       {formatTransactionType(transaction.type)}
                     </td>
                     <td
                       className={`px-4 py-3 text-right font-semibold tabular-nums ${
                         transaction.visitDelta > 0
-                          ? "text-neutral-900"
-                          : "text-amber-700"
+                          ? "text-fg"
+                          : "text-amber-300"
                       }`}
                     >
                       {formatVisitDelta(transaction.visitDelta)}
@@ -113,7 +113,7 @@ export default async function HistoryPage() {
             </table>
           </div>
 
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-fg-faint">
             {transactions.length} dernières opérations.
           </p>
         </>

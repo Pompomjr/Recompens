@@ -26,10 +26,10 @@ export default async function ResetPasswordPage() {
       </Link>
 
       <div className="flex flex-col gap-2">
-        <h1 className="font-display text-2xl tracking-tight text-neutral-900">
+        <h1 className="font-display text-2xl tracking-tight text-fg">
           Nouveau mot de passe
         </h1>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-fg-soft">
           Choisissez-en un nouveau pour {user.email}. Vous serez connecté dans
           la foulée.
         </p>

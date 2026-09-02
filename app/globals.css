@@ -16,6 +16,17 @@
  */
 
 :root {
+  /* Univers commerçant — sombre.
+     Il travaille parfois en plein soleil derrière une vitrine : les
+     contrastes restent élevés et les cibles tactiles larges. Le fond sombre
+     ne doit rien coûter en lisibilité. */
+  --surface: #17181a;
+  --surface-raised: #202226;
+  --line: rgba(242, 242, 240, 0.13);
+  --fg: #f2f2f0;
+  --fg-soft: rgba(242, 242, 240, 0.58);
+  --fg-faint: rgba(242, 242, 240, 0.36);
+
   /* Univers client — papier */
   --paper: #efe4ce;
   --paper-tint: #f7f1e8;
@@ -39,6 +50,13 @@
   --color-brand: #2fbf71;
   --color-brand-dark: #1e8a50;
 
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-fg-soft: var(--fg-soft);
+  --color-fg-faint: var(--fg-faint);
+
   --font-brand: var(--font-brand);
   --font-brand-stencil: var(--font-brand-stencil);
   --font-display: var(--font-display);
@@ -47,8 +65,8 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface);
+  color: var(--fg);
 }
 
 /*

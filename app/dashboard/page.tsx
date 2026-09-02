@@ -14,7 +14,8 @@ import { formatVisits } from "@/lib/format";
  *
  * Mise en page mobile-first et hiérarchie imposée par le §17 :
  * SCAN → CLIENT → VALIDER. Le bouton de scan est donc la première action
- * visible, avant les listes.
+ * visible, avant les listes, et porte la couleur de la marque : c'est le seul
+ * élément vert de l'écran, pour qu'on ne puisse pas le manquer.
  */
 export default async function DashboardPage() {
   const { merchant } = await requireMerchant();
@@ -23,11 +24,29 @@ export default async function DashboardPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 p-5">
-      {/* cf SPEC §6 : "Le bouton SCANNER UN CLIENT doit être l'action principale." */}
+      {/* cf SPEC §6 : « Le bouton SCANNER UN CLIENT doit être l'action principale. » */}
       <Link
         href="/dashboard/scan"
-        className="flex items-center justify-center rounded-2xl bg-neutral-900 px-6 py-7 font-display text-xl tracking-[0.04em] text-white shadow-sm active:bg-neutral-800"
+        className="flex items-center justify-center gap-3 rounded-2xl px-6 py-7 font-display text-xl tracking-[0.04em]"
+        style={{ backgroundColor: "#2FBF71", color: "#10331F" }}
       >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+          <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+          <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+          <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+          <path d="M3 12h18" />
+        </svg>
         SCANNER UN CLIENT
       </Link>
 
@@ -44,29 +63,32 @@ export default async function DashboardPage() {
       {/* Tant qu'aucun programme n'existe, le scan et l'inscription client
           n'ont rien à quoi se rattacher : on met la création en avant. */}
       {!program ? (
-        <section className="flex flex-col gap-3 rounded-xl border border-neutral-900 bg-neutral-50 p-5">
-          <h2 className="font-display text-lg tracking-tight text-neutral-900">
+        <section className="flex flex-col gap-3 rounded-xl border border-brand/40 bg-brand/10 p-5">
+          <h2 className="font-display text-lg tracking-tight text-fg">
             Créez votre programme de fidélité
           </h2>
-          <p className="text-sm text-neutral-600">
+          <p className="text-sm text-fg-soft">
             C&apos;est lui qui définit le nombre de visites nécessaires et la
             récompense. Sans programme, vos clients ne peuvent pas encore
             s&apos;inscrire.
           </p>
           <Link
             href="/dashboard/program"
-            className="self-start rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white"
+            className="self-start rounded-lg px-4 py-2.5 font-display text-sm tracking-[0.04em]"
+            style={{ backgroundColor: "#2FBF71", color: "#10331F" }}
           >
-            Créer mon programme
+            CRÉER MON PROGRAMME
           </Link>
         </section>
       ) : (
-        <section className="flex flex-col gap-1 rounded-xl border border-neutral-200 bg-white p-4">
-          <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-neutral-500">
+        <section className="flex flex-col gap-1 rounded-xl border border-line bg-surface-raised p-4">
+          <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-fg-faint">
             Programme actif
           </span>
-          <span className="font-display text-base tracking-tight text-neutral-900">{program.name}</span>
-          <span className="text-sm text-neutral-600">
+          <span className="font-display text-base tracking-tight text-fg">
+            {program.name}
+          </span>
+          <span className="text-sm text-fg-soft">
             {formatVisits(program.visitsRequired)} → {program.rewardName}
           </span>
         </section>

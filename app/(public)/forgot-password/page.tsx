@@ -23,17 +23,17 @@ export default async function ForgotPasswordPage({
       </Link>
 
       <div className="flex flex-col gap-2">
-        <h1 className="font-display text-2xl tracking-tight text-neutral-900">
+        <h1 className="font-display text-2xl tracking-tight text-fg">
           Mot de passe oublié
         </h1>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-fg-soft">
           Indiquez l&apos;adresse de votre compte commerçant. Vous recevrez un
           lien pour en choisir un nouveau.
         </p>
       </div>
 
       {expire ? (
-        <p className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
+        <p className="rounded-lg border border-amber-400/40 bg-amber-400/10 p-4 text-sm text-amber-200">
           Ce lien n&apos;est plus valable — il a expiré ou a déjà servi.
           Demandez-en un nouveau ci-dessous.
         </p>
@@ -41,8 +41,8 @@ export default async function ForgotPasswordPage({
 
       <ForgotPasswordForm />
 
-      <p className="text-center text-sm text-neutral-600">
-        <Link href="/login" className="font-medium underline">
+      <p className="text-center text-sm text-fg-soft">
+        <Link href="/login" className="font-medium text-brand underline">
           Retour à la connexion
         </Link>
       </p>

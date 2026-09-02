@@ -33,8 +33,8 @@ export function ProgramEditForm({
   const seuilChange = visits !== visitsRequired;
 
   return (
-    <details className="rounded-xl border border-neutral-200 bg-white p-5">
-      <summary className="cursor-pointer font-display text-[15px] tracking-tight text-neutral-900">
+    <details className="rounded-xl border border-line bg-surface-raised p-5">
+      <summary className="cursor-pointer font-display text-[15px] tracking-tight text-fg">
         Modifier le programme
       </summary>
 
@@ -42,7 +42,7 @@ export function ProgramEditForm({
         <input type="hidden" name="programId" value={programId} />
 
         <label className="flex flex-col gap-1.5">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-fg-faint">
             Nom du programme
           </span>
           <input
@@ -52,12 +52,12 @@ export function ProgramEditForm({
             required
             minLength={2}
             maxLength={80}
-            className="rounded-lg border border-neutral-300 px-3.5 py-2.5 text-base outline-none focus:border-neutral-900"
+            className="rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-fg outline-none placeholder:text-fg-faint focus:border-brand"
           />
         </label>
 
         <label className="flex flex-col gap-1.5">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-fg-faint">
             Visites nécessaires
           </span>
           <input
@@ -69,12 +69,12 @@ export function ProgramEditForm({
             min={1}
             max={100}
             inputMode="numeric"
-            className="rounded-lg border border-neutral-300 px-3.5 py-2.5 text-base outline-none focus:border-neutral-900"
+            className="rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-fg outline-none placeholder:text-fg-faint focus:border-brand"
           />
         </label>
 
         {seuilChange ? (
-          <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <p className="rounded-lg bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
             Ce changement s&apos;applique aux cartes déjà en cours. Un client
             ayant déjà atteint le nouveau seuil verra sa récompense se
             débloquer. Une récompense déjà gagnée n&apos;est jamais reprise.
@@ -82,7 +82,7 @@ export function ProgramEditForm({
         ) : null}
 
         <label className="flex flex-col gap-1.5">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-fg-faint">
             Récompense
           </span>
           <input
@@ -92,11 +92,11 @@ export function ProgramEditForm({
             required
             minLength={2}
             maxLength={80}
-            className="rounded-lg border border-neutral-300 px-3.5 py-2.5 text-base outline-none focus:border-neutral-900"
+            className="rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-fg outline-none placeholder:text-fg-faint focus:border-brand"
           />
         </label>
 
-        <label className="flex items-start gap-3 rounded-lg border border-neutral-200 p-3.5">
+        <label className="flex items-start gap-3 rounded-lg border border-line p-3.5">
           <input
             type="checkbox"
             name="active"
@@ -104,10 +104,10 @@ export function ProgramEditForm({
             className="mt-0.5 size-4"
           />
           <span className="flex flex-col gap-0.5">
-            <span className="text-sm font-medium text-neutral-900">
+            <span className="text-sm font-medium text-fg">
               Programme actif
             </span>
-            <span className="text-sm text-neutral-500">
+            <span className="text-sm text-fg-faint">
               Décoché, plus personne ne peut s&apos;inscrire ni valider de
               visite. Les cartes et l&apos;historique sont conservés.
             </span>
@@ -115,7 +115,7 @@ export function ProgramEditForm({
         </label>
 
         {state.status === "error" ? (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm text-red-400">
             {state.message}
           </p>
         ) : null}
@@ -123,7 +123,7 @@ export function ProgramEditForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-lg bg-neutral-900 px-5 py-3 font-display text-[15px] tracking-[0.04em] text-white disabled:opacity-50"
+          className="rounded-lg px-5 py-3.5 font-display text-[15px] tracking-[0.04em] disabled:opacity-50" style={{ backgroundColor: "#2FBF71", color: "#10331F" }}
         >
           {pending ? "Enregistrement…" : "ENREGISTRER"}
         </button>

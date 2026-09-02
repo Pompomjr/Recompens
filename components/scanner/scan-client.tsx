@@ -143,8 +143,8 @@ export function ScanClient() {
         <>
           <QrScanner onDetected={lookup} paused={paused} />
 
-          <details className="rounded-xl border border-neutral-200 bg-white p-4">
-            <summary className="cursor-pointer text-sm font-medium text-neutral-700">
+          <details className="rounded-xl border border-line bg-surface-raised p-4">
+            <summary className="cursor-pointer text-sm font-medium text-fg-soft">
               Saisir le code manuellement
             </summary>
             <form
@@ -159,17 +159,17 @@ export function ScanClient() {
                 value={manualToken}
                 onChange={(event) => setManualToken(event.target.value)}
                 placeholder="Code du QR client"
-                className="rounded-lg border border-neutral-300 px-3.5 py-2.5 text-base outline-none focus:border-neutral-900"
+                className="rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-fg outline-none placeholder:text-fg-faint focus:border-brand"
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white disabled:opacity-50"
+                className="rounded-lg border border-line px-4 py-2.5 text-sm font-medium text-fg disabled:opacity-50"
               >
                 Rechercher
               </button>
             </form>
-            <p className="mt-2 text-xs text-neutral-500">
+            <p className="mt-2 text-xs text-fg-faint">
               Utile pour tester depuis un ordinateur sans caméra.
             </p>
           </details>
@@ -177,20 +177,20 @@ export function ScanClient() {
       ) : null}
 
       {loading ? (
-        <p className="text-center text-sm text-neutral-500">Recherche…</p>
+        <p className="text-center text-sm text-fg-faint">Recherche…</p>
       ) : null}
 
       {error ? (
         <div
           role="alert"
-          className="flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 p-4"
+          className="flex flex-col gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4"
         >
-          <p className="text-sm text-red-700">{error}</p>
+          <p className="text-sm text-red-300">{error}</p>
           {!result ? (
             <button
               type="button"
               onClick={reset}
-              className="self-start rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+              className="self-start rounded-lg border border-line px-4 py-2 text-sm font-medium text-fg"
             >
               Réessayer
             </button>
@@ -201,7 +201,7 @@ export function ScanClient() {
       {confirmation ? (
         <p
           role="status"
-          className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-800"
+          className="rounded-xl border border-brand/35 bg-brand/10 p-4 text-sm font-medium text-brand"
         >
           {confirmation}
         </p>
@@ -267,23 +267,23 @@ function ScanResultCard({
   const [confirming, setConfirming] = useState(false);
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-6 text-center">
-      <span className="font-display text-2xl tracking-tight text-neutral-900">
+    <div className="flex flex-col gap-4 rounded-2xl border border-line bg-surface-raised p-6 text-center">
+      <span className="font-display text-2xl tracking-tight text-fg">
         {result.firstName}
       </span>
 
-      <span className="font-display text-[52px] leading-none tabular-nums text-neutral-900">
+      <span className="font-display text-[52px] leading-none tabular-nums text-fg">
         {result.visitCount} / {result.visitsRequired}
       </span>
-      <span className="-mt-3 text-sm text-neutral-500">
+      <span className="-mt-3 text-sm text-fg-faint">
         {visitsLabel(result.visitsRequired)}
       </span>
 
       {/* cf SPEC §12 et §13 : récompense visible du commerçant, et remise
           possible en un geste. */}
       {result.rewardAvailable ? (
-        <div className="flex flex-col gap-3 rounded-xl bg-amber-50 p-4">
-          <p className="text-sm font-medium text-amber-800">
+        <div className="flex flex-col gap-3 rounded-xl bg-amber-400/10 p-4">
+          <p className="text-sm font-medium text-amber-200">
             Récompense à remettre : {result.rewardName}
           </p>
 
@@ -298,7 +298,7 @@ function ScanResultCard({
             </button>
           ) : (
             <div className="flex flex-col gap-2">
-              <p className="text-sm text-amber-900">
+              <p className="text-sm text-amber-100">
                 Confirmez que la récompense a bien été remise au client. Le
                 compteur repartira à zéro.
               </p>
@@ -316,7 +316,7 @@ function ScanResultCard({
               <button
                 type="button"
                 onClick={() => setConfirming(false)}
-                className="text-sm text-amber-900 underline"
+                className="text-sm text-amber-100 underline"
               >
                 Annuler
               </button>
@@ -329,11 +329,12 @@ function ScanResultCard({
         type="button"
         onClick={onValidate}
         disabled={busy}
-        className={`rounded-xl px-6 py-5 font-display text-xl tracking-[0.04em] disabled:opacity-50 ${
+        className="rounded-xl px-6 py-5 font-display text-xl tracking-[0.04em] disabled:opacity-50"
+        style={
           result.rewardAvailable
-            ? "border border-neutral-300 bg-white text-neutral-900"
-            : "bg-neutral-900 text-white"
-        }`}
+            ? { border: "1px solid var(--line)", color: "var(--fg)" }
+            : { backgroundColor: "#2FBF71", color: "#10331F" }
+        }
       >
         {busy ? "…" : "+1 VISITE"}
       </button>
@@ -341,7 +342,7 @@ function ScanResultCard({
       <button
         type="button"
         onClick={onReset}
-        className="text-sm text-neutral-500 underline"
+        className="text-sm text-fg-faint underline"
       >
         Scanner un autre client
       </button>

@@ -233,8 +233,14 @@ Deux univers volontairement distincts (cf SPEC §17) :
 - **Côté client** — du papier. La carte est un *ticket* : fond crème grainé,
   perforation, numéro de série, tampons posés de travers. Elle doit ressembler
   à un objet qu'on possède, lisible à un mètre dans une boutique très éclairée.
-- **Côté commerçant** — du noir et blanc. Il travaille avec, en vitesse,
-  derrière un comptoir. Grosses cibles tactiles, aucune fantaisie.
+- **Côté commerçant** — sombre, avec le vert de la marque réservé à
+  l'action du moment. Il travaille avec, en vitesse, derrière un comptoir :
+  grosses cibles tactiles, contrastes élevés, une seule chose colorée par
+  écran pour qu'on ne puisse pas la manquer.
+
+  Jetons dans `globals.css` : `--surface`, `--surface-raised`, `--line`,
+  `--fg`, `--fg-soft`, `--fg-faint`. Ne pas réintroduire de classes
+  `neutral-*` de ce côté : elles viennent du scaffold et cassent le thème.
 
 ### La marque
 

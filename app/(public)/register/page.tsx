@@ -18,24 +18,24 @@ export default function RegisterPage() {
       </Link>
 
       <div className="flex flex-col gap-2">
-        <h1 className="font-display text-2xl tracking-tight text-neutral-900">
+        <h1 className="font-display text-2xl tracking-tight text-fg">
           Créer mon compte commerçant
         </h1>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-fg-soft">
           Votre commerce et votre programme de fidélité, en quelques minutes.
         </p>
       </div>
 
       <RegisterMerchantForm />
 
-      <div className="flex flex-col gap-3 text-center text-sm text-neutral-600">
+      <div className="flex flex-col gap-3 text-center text-sm text-fg-soft">
         <p>
           Vous avez déjà un compte ?{" "}
-          <Link href="/login" className="font-medium underline">
+          <Link href="/login" className="font-medium text-brand underline">
             Se connecter
           </Link>
         </p>
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-fg-faint">
           Vous êtes client d&apos;un commerce ? Scannez simplement le QR code
           affiché en boutique : votre carte se crée toute seule.
         </p>

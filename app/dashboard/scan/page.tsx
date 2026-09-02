@@ -13,14 +13,14 @@ export default async function ScanPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col gap-5 p-5">
-      <Link href="/dashboard" className="text-sm text-neutral-500 underline">
+      <Link href="/dashboard" className="text-sm text-fg-faint underline">
         ← Retour au dashboard
       </Link>
 
-      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+      <h1 className="text-2xl font-bold tracking-tight text-fg">
         Scanner un client
       </h1>
-      <p className="-mt-3 text-sm text-neutral-600">
+      <p className="-mt-3 text-sm text-fg-soft">
         Présentez le QR du client devant la caméra.
       </p>
 

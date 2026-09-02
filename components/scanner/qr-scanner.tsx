@@ -128,7 +128,7 @@ export function QrScanner({
     return (
       <p
         role="alert"
-        className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800"
+        className="rounded-xl border border-amber-400/40 bg-amber-400/10 p-4 text-sm text-amber-200"
       >
         {cameraError}
       </p>
@@ -136,7 +136,7 @@ export function QrScanner({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-black">
+    <div className="relative overflow-hidden rounded-2xl border border-line bg-black">
       <video
         ref={videoRef}
         playsInline

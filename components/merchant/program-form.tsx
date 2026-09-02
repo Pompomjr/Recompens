@@ -19,7 +19,7 @@ export function ProgramForm() {
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-700">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-fg-faint">
           Nom du programme
         </span>
         <input
@@ -29,12 +29,12 @@ export function ProgramForm() {
           minLength={2}
           maxLength={80}
           placeholder="Carte fidélité Café Dupont"
-          className="rounded-lg border border-neutral-300 px-3.5 py-2.5 text-base outline-none focus:border-neutral-900"
+          className="rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-fg outline-none placeholder:text-fg-faint focus:border-brand"
         />
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-700">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-fg-faint">
           Visites nécessaires
         </span>
         <input
@@ -45,15 +45,15 @@ export function ProgramForm() {
           max={100}
           defaultValue={10}
           inputMode="numeric"
-          className="rounded-lg border border-neutral-300 px-3.5 py-2.5 text-base outline-none focus:border-neutral-900"
+          className="rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-fg outline-none placeholder:text-fg-faint focus:border-brand"
         />
-        <span className="text-xs text-neutral-500">
+        <span className="text-xs text-fg-faint">
           Nombre de passages avant que la récompense se débloque.
         </span>
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-700">Récompense</span>
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-fg-faint">Récompense</span>
         <input
           type="text"
           name="rewardName"
@@ -61,12 +61,12 @@ export function ProgramForm() {
           minLength={2}
           maxLength={80}
           placeholder="1 café offert"
-          className="rounded-lg border border-neutral-300 px-3.5 py-2.5 text-base outline-none focus:border-neutral-900"
+          className="rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-fg outline-none placeholder:text-fg-faint focus:border-brand"
         />
       </label>
 
       {state.status === "error" ? (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-red-400">
           {state.message}
         </p>
       ) : null}
@@ -74,7 +74,7 @@ export function ProgramForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded-lg bg-neutral-900 px-5 py-3 text-base font-medium text-white disabled:opacity-50"
+        className="mt-2 rounded-lg px-5 py-3.5 font-display text-[15px] tracking-[0.04em] disabled:opacity-50" style={{ backgroundColor: "#2FBF71", color: "#10331F" }}
       >
         {pending ? "Création…" : "CRÉER"}
       </button>

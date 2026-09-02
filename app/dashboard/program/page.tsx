@@ -25,17 +25,17 @@ export default async function ProgramPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 p-5">
-      <Link href="/dashboard" className="text-sm text-neutral-500 underline">
-        ← Retour au dashboard
+      <Link href="/dashboard" className="font-mono text-[11px] tracking-[0.16em] text-fg-faint underline">
+        ← RETOUR AU DASHBOARD
       </Link>
 
-      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+      <h1 className="font-display text-2xl tracking-tight text-fg">
         Programme de fidélité
       </h1>
 
       {!program ? (
         <>
-          <p className="text-sm text-neutral-600">
+          <p className="text-sm text-fg-soft">
             Définissez vos règles. Exemple : 10 visites pour 1 café offert.
           </p>
           <ProgramForm />
@@ -70,27 +70,27 @@ async function ProgramDetails({
 
   return (
     <>
-      <section className="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-white p-5">
+      <section className="flex flex-col gap-3 rounded-xl border border-line bg-surface-raised p-5">
         <div className="flex flex-col gap-0.5">
-          <span className="text-xs font-medium text-neutral-500">Nom</span>
-          <span className="font-medium text-neutral-900">{program.name}</span>
+          <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-fg-faint">Nom</span>
+          <span className="text-base text-fg">{program.name}</span>
         </div>
         <div className="flex flex-col gap-0.5">
-          <span className="text-xs font-medium text-neutral-500">Règle</span>
-          <span className="font-medium text-neutral-900">
+          <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-fg-faint">Règle</span>
+          <span className="text-base text-fg">
             {formatVisits(program.visitsRequired)} → {program.rewardName}
           </span>
         </div>
         <div className="flex flex-col gap-0.5">
-          <span className="text-xs font-medium text-neutral-500">Statut</span>
-          <span className="font-medium text-neutral-900">
+          <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-fg-faint">Statut</span>
+          <span className="text-base text-fg">
             {program.active ? "Actif" : "Inactif"}
           </span>
         </div>
       </section>
 
       {!program.active ? (
-        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
+        <p className="rounded-xl border border-amber-400/40 bg-amber-400/10 p-4 text-sm text-amber-200">
           Ce programme est arrêté : plus personne ne peut s&apos;inscrire ni
           valider de visite. Les cartes de vos clients sont conservées et
           repartiront dès que vous le réactiverez.
@@ -105,11 +105,11 @@ async function ProgramDetails({
         active={program.active}
       />
 
-      <section className="flex flex-col items-center gap-4 rounded-xl border border-neutral-200 bg-white p-5">
-        <h2 className="self-start font-semibold text-neutral-900">
+      <section className="flex flex-col items-center gap-4 rounded-xl border border-line bg-surface-raised p-5">
+        <h2 className="self-start font-display text-base tracking-tight text-fg">
           QR d&apos;inscription
         </h2>
-        <p className="self-start text-sm text-neutral-600">
+        <p className="self-start text-sm text-fg-soft">
           Imprimez-le et posez-le sur votre comptoir. Vos clients le scannent
           pour créer leur carte, sans installer d&apos;application.
         </p>
@@ -119,18 +119,18 @@ async function ProgramDetails({
         <img
           src={qrDataUrl}
           alt={`QR code d'inscription pour ${program.name}`}
-          className="h-56 w-56 rounded-lg border border-neutral-200"
+          className="h-56 w-56 rounded-lg bg-surface-raised p-2"
         />
 
         <a
           href={qrDataUrl}
           download={`qr-inscription-${program.id}.png`}
-          className="rounded-lg bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white"
+          className="rounded-lg px-5 py-2.5 font-display text-sm tracking-[0.04em]" style={{ backgroundColor: "#2FBF71", color: "#10331F" }}
         >
           Télécharger le QR
         </a>
 
-        <p className="w-full break-all text-center text-xs text-neutral-500">
+        <p className="w-full break-all text-center font-mono text-[11px] text-fg-faint">
           {joinUrl}
         </p>
       </section>

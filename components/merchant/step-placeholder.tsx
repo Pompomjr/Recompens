@@ -16,14 +16,15 @@ export function StepPlaceholder({
 }) {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-5">
-      <Link href="/dashboard" className="text-sm text-neutral-500 underline">
-        ← Retour au dashboard
+      <Link
+        href="/dashboard"
+        className="font-mono text-[11px] tracking-[0.16em] text-fg-faint underline"
+      >
+        ← RETOUR AU DASHBOARD
       </Link>
-      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-        {title}
-      </h1>
-      <p className="text-sm text-neutral-600">{description}</p>
-      <p className="rounded-lg border border-dashed border-neutral-300 p-4 text-sm text-neutral-500">
+      <h1 className="font-display text-2xl tracking-tight text-fg">{title}</h1>
+      <p className="text-sm text-fg-soft">{description}</p>
+      <p className="rounded-lg border border-dashed border-line p-4 text-sm text-fg-faint">
         Écran construit à l&apos;{step}.
       </p>
     </main>
