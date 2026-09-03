@@ -1,25 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <!--
-    Favicon : la pastille au R PLEIN.
+    Icône de l'application : le R AJOURÉ de la marque, celui des deux E du
+    wordmark (cf components/brand/logo.tsx).
 
-    Le R est dessiné en tracés, PAS en texte : un favicon ne charge aucune
-    police, un <text> s'afficherait donc avec la police du système — et
-    différemment sur chaque machine.
+    Trois décisions, chacune payée par un défaut constaté :
 
-    C'est aussi la version simplifiée du logo, celle prévue pour les tailles
-    où les entailles du R ajouré se refermeraient (cf components/brand/logo.tsx).
+    1. FOND PERDU. La version précédente était un cercle sur fond transparent :
+       ses coins prenaient la couleur que le système met derrière — noir ou
+       blanc selon le téléphone et le thème. Une icône couvre toute sa surface,
+       et c'est le système qui la masque comme il l'entend.
+
+    2. LETTRE DANS LES 80 % CENTRAUX. Android peut rogner l'icône en rond pour
+       ses icônes « maskable ». Le R déborderait de ce cercle s'il était plus
+       grand, et perdrait sa jambe oblique.
+
+    3. TRACÉS, PAS DE TEXTE. Une icône ne charge aucune police : un <text>
+       s'afficherait avec celle du système, donc différemment sur chaque
+       appareil. Les entailles du R ajouré sont donc peintes par-dessus la
+       lettre pleine, dans la couleur du fond.
   -->
-  <circle cx="32" cy="32" r="32" fill="#2FBF71" />
+  <rect width="512" height="512" rx="112" fill="#2FBF71"/>
 
-  <g fill="#10331F">
+  <g transform="translate(11.8 19.2) scale(7.4)" fill="#10331F">
     <!-- Le jambage vertical -->
-    <rect x="17" y="15" width="9" height="34" />
+    <rect x="17" y="15" width="9" height="34"/>
     <!-- La panse, pleine -->
-    <path d="M24 15 h13 a12 12 0 0 1 0 24 h-13 z" />
+    <path d="M24 15 h13 a12 12 0 0 1 0 24 h-13 z"/>
     <!-- La jambe oblique -->
-    <path d="M31 37 h10 l8 12 h-11 z" />
+    <path d="M31 37 h10 l8 12 h-11 z"/>
   </g>
 
-  <!-- Le contre-poinçon, percé dans la couleur du fond -->
-  <path d="M26 22 h11 a5 5 0 0 1 0 10 h-11 z" fill="#2FBF71" />
+  <!-- Les entailles, dans la couleur du fond : c'est elles qui font l'ajouré. -->
+  <g transform="translate(11.8 19.2) scale(7.4)" fill="#2FBF71">
+    <rect x="14" y="24" width="30" height="4"/>
+    <rect x="14" y="35" width="24" height="4"/>
+    <rect x="28" y="14" width="4" height="12"/>
+  </g>
 </svg>
