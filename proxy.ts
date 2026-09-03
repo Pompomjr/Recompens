@@ -74,7 +74,12 @@ export async function proxy(request: NextRequest) {
 
     // Mauvais espace : on renvoie l'utilisateur chez lui plutôt que de lui
     // afficher une page qui échouera de toute façon côté serveur.
-    if (role && role !== protectedMatch.role) {
+    //
+    // /admin est l'exception : son accès dépend aussi d'une liste d'adresses
+    // (cf lib/auth/admin-access.ts) que ce fichier ne peut pas consulter sans
+    // requête base, déconseillée ici. On laisse donc passer, et `requireAdmin()`
+    // tranche côté serveur — comme partout, c'est LUI qui fait autorité.
+    if (protectedMatch.role !== "ADMIN" && role && role !== protectedMatch.role) {
       return redirectPreservingSession(
         new URL(ROLE_HOME[role], request.url),
         response

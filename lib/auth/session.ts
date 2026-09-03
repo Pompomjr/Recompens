@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "./supabase-server";
 import { prisma } from "@/lib/db/prisma";
 import type { Role } from "@prisma/client";
+import { estAdmin } from "./admin-access";
 
 export class UnauthorizedError extends Error {
   constructor(message = "Non authentifié") {
@@ -58,6 +59,20 @@ export async function requireMerchant() {
     throw new ForbiddenError("Aucun commerce associé à ce compte");
   }
   return { user, merchant: user.merchant };
+}
+
+/**
+ * Barrière de l'espace d'administration.
+ *
+ * Ne passe pas par `requireRole()` : l'accès y est ouvert au rôle ADMIN ET
+ * aux adresses de `ADMIN_EMAILS`, pour que l'exploitant reste commerçant de
+ * ses propres commerces (cf lib/auth/admin-access.ts).
+ */
+export async function requireAdmin() {
+  const user = await getCurrentUser();
+  if (!user) throw new UnauthorizedError();
+  if (!estAdmin(user)) throw new ForbiddenError("Accès réservé à l'exploitant");
+  return user;
 }
 
 export async function requireCustomer() {

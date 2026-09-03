@@ -80,6 +80,12 @@ model Merchant {
   // VESSEL sans silhouette retombe sur TICKET : jamais de carte cassée.
   cardStyle   CardStyle    @default(TICKET) @map("card_style")
   vesselShape VesselShape? @map("vessel_shape")
+
+  // Décor du QR sur l'affichette quand aucune silhouette n'est réglée : le
+  // logo du commerce en filigrane. Faux par défaut — appliqué à tous, il
+  // habillait des affichettes qui n'avaient rien demandé (cf components/
+  // merchant/qr-ornement.tsx).
+  qrOrnementLogo Boolean @default(false) @map("qr_ornement_logo")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

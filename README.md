@@ -408,8 +408,6 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
       d'erreur ne peut pas la distinguer d'un mot de passe oublié. Cas
       rencontré en vrai le 2026-09-02.
 
-- [ ] **Écran d'administration** (§3 rôle ADMIN, §16 `/admin`) — réglerait
-      notamment le délai anti-cumul sans passer par le Table Editor.
 - [ ] **Liste des clients** (`/dashboard/customers`), encore en placeholder.
 
 ## Points d'architecture à retenir

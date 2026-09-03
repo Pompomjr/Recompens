@@ -43,6 +43,7 @@ export function Poster({
   merchantName,
   logoUrl,
   vesselShape,
+  ornementLogo,
   visitsRequired,
   rewardName,
   qrDataUrl,
@@ -57,6 +58,8 @@ export function Poster({
    * logo prend le relais en filigrane.
    */
   vesselShape: VesselShape | null;
+  /** Le logo doit-il servir de décor au QR, faute de silhouette. */
+  ornementLogo: boolean;
   visitsRequired: number;
   rewardName: string;
   qrDataUrl: string;
@@ -246,7 +249,11 @@ export function Poster({
               height: "20.5em",
             }}
           >
-            <QrOrnement shape={vesselShape} accent={accent} />
+            <QrOrnement
+              shape={vesselShape}
+              logoUrl={ornementLogo ? logoUrl : null}
+              accent={accent}
+            />
 
             {/* La plaque blanche est la zone de silence du QR : elle passe
                 TOUJOURS au-dessus du décor, jamais l'inverse. */}

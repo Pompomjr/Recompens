@@ -72,6 +72,7 @@ export default async function AffichePage() {
         vesselShape={
           merchant.cardStyle === "VESSEL" ? merchant.vesselShape : null
         }
+        ornementLogo={merchant.qrOrnementLogo}
         visitsRequired={program.visitsRequired}
         rewardName={program.rewardName}
         qrDataUrl={qrDataUrl}
