@@ -155,21 +155,19 @@ export function Poster({
               réduirait au tiers de la place disponible. Ici la hauteur est
               fixe, la largeur libre.
 
-              La plaque blanche n'apparaît QUE sur la version couleur, où le
-              fond est l'encre du commerce : beaucoup de logos sont dessinés en
-              foncé sur blanc et y disparaîtraient. Sur la version claire, le
-              logo est posé à nu — une plaque n'y protégerait rien et se
-              verrait à l'impression comme un rectangle rapporté. */}
+              Aucune plaque derrière, dans aucune des deux versions. Elle a
+              d'abord existé pour protéger les logos foncés posés sur l'encre
+              du commerce, mais un rectangle blanc au milieu d'un aplat de
+              couleur se voit comme une pièce rapportée — et il se verrait
+              encore plus à l'impression.
+
+              C'est le même arbitrage que sur la carte du client : au
+              commerçant de fournir un fichier lisible sur sa couleur, plutôt
+              que de dégrader toutes les affichettes pour protéger le cas
+              rare. Et si le cas se présente vraiment, la vraie réponse est de
+              changer sa couleur depuis /admin. */}
           {logoUrl ? (
-            <div
-              style={{
-                ...(sombre
-                  ? { backgroundColor: "#FFFFFF", padding: "0.5em 0.8em" }
-                  : null),
-                marginBottom: "1em",
-                lineHeight: 0,
-              }}
-            >
+            <div style={{ marginBottom: "1em", lineHeight: 0 }}>
               {/* eslint-disable-next-line @next/next/no-img-element -- adresse
                   saisie en base : la passer à l'optimiseur imposerait de
                   déclarer chaque domaine dans next.config. */}
