@@ -5,6 +5,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
 import { requireAdmin } from "@/lib/auth/session";
 import { adminConfig } from "@/lib/supabase/admin-config";
+import { createSupabaseServerClient } from "@/lib/auth/supabase-server";
+import { getAppUrl } from "@/lib/app-url";
 import type { FormState } from "@/lib/forms/state";
 
 /**
@@ -29,6 +31,7 @@ const schema = z.object({
   merchantId: z.string().uuid("Commerce introuvable"),
   email: z.email("Adresse email invalide"),
   reinitialiser: z.boolean(),
+  envoyerLien: z.boolean(),
   confirmation: z.literal(true, {
     message: "Cochez la case de confirmation avant de transférer.",
   }),
@@ -44,6 +47,7 @@ export async function transferMerchantAction(
     merchantId: formData.get("merchantId"),
     email: formData.get("email"),
     reinitialiser: formData.get("reinitialiser") === "on",
+    envoyerLien: formData.get("envoyerLien") === "on",
     confirmation: formData.get("confirmation") === "on",
   });
 
@@ -51,7 +55,7 @@ export async function transferMerchantAction(
     return { status: "error", message: parsed.error.issues[0].message };
   }
 
-  const { merchantId, email: brut, reinitialiser } = parsed.data;
+  const { merchantId, email: brut, reinitialiser, envoyerLien } = parsed.data;
   const email = brut.trim().toLowerCase();
 
   const merchant = await prisma.merchant.findUnique({
@@ -123,6 +127,38 @@ export async function transferMerchantAction(
     cartesEffacees = count;
   }
 
+  // Le lien de mot de passe, envoyé dans la foulée.
+  //
+  // Sans lui, il reste au commerçant à trouver « Mot de passe oublié » sur la
+  // page de connexion — l'étape la plus fragile de l'installation, celle qu'on
+  // finit par faire à sa place sur son téléphone. Ici on sait que le compte
+  // existe : l'échec est donc RAPPORTÉ, contrairement à /forgot-password où le
+  // message reste volontairement identique dans tous les cas.
+  let lien = "";
+
+  if (envoyerLien) {
+    const supabase = await createSupabaseServerClient();
+    const appUrl = await getAppUrl();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${appUrl}/auth/reset`,
+    });
+
+    if (error) {
+      console.error(
+        "[transfert] envoi du lien impossible:",
+        error.code ?? error.message
+      );
+      // Supabase n'accepte qu'un envoi par minute et par adresse : le cas le
+      // plus probable, et le seul que l'exploitant peut corriger en attendant.
+      lien =
+        error.code === "over_email_send_rate_limit"
+          ? " Le lien n'a PAS été envoyé (trop de demandes pour cette adresse) : réessayez dans une minute depuis la page de connexion."
+          : " Le lien n'a PAS été envoyé — faites-lui utiliser « Mot de passe oublié ».";
+    } else {
+      lien = " Le lien pour choisir son mot de passe vient de lui être envoyé.";
+    }
+  }
+
   revalidatePath("/admin");
   revalidatePath("/dashboard", "layout");
 
@@ -131,6 +167,7 @@ export async function transferMerchantAction(
     message:
       `${merchant.name} appartient maintenant à ${email}` +
       (reinitialiser ? ` — ${cartesEffacees} carte(s) de test effacée(s)` : "") +
-      `. Faites-lui choisir son mot de passe via « Mot de passe oublié ».`,
+      `.` +
+      lien,
   };
 }

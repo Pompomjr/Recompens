@@ -40,8 +40,9 @@ export function MerchantTransferForm({
           {state.message}
         </p>
         <p className="text-sm text-fg-soft">
-          Sur son téléphone : <strong className="text-fg">recompens.com/login</strong>{" "}
-          → « Mot de passe oublié » → il reçoit le lien à sa nouvelle adresse.
+          S&apos;il ne trouve pas le mail, faites-lui regarder ses{" "}
+          <strong className="text-fg">indésirables</strong> — un domaine récent
+          y atterrit souvent — et marquer le message comme légitime.
         </p>
       </div>
     );
@@ -91,6 +92,24 @@ export function MerchantTransferForm({
             <span className="text-sm text-fg-faint">
               Le commerce démarre à zéro client. Le programme, le logo et le QR
               sont conservés.
+            </span>
+          </span>
+        </label>
+
+        <label className="flex items-start gap-3 rounded-lg border border-line p-3.5">
+          <input
+            type="checkbox"
+            name="envoyerLien"
+            defaultChecked
+            className="mt-0.5 size-4"
+          />
+          <span className="flex flex-col gap-0.5">
+            <span className="text-sm font-medium text-fg">
+              Lui envoyer tout de suite le lien de mot de passe
+            </span>
+            <span className="text-sm text-fg-faint">
+              Il n&apos;a plus qu&apos;à ouvrir le mail et choisir son mot de
+              passe. Vous ne le connaîtrez pas.
             </span>
           </span>
         </label>
