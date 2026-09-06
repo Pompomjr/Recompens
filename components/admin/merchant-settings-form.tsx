@@ -6,6 +6,7 @@ import { updateMerchantSettingsAction } from "@/lib/admin/actions";
 import { initialFormState, type FormState } from "@/lib/forms/state";
 import { MerchantLogo } from "@/components/merchant/merchant-logo";
 import Link from "next/link";
+import { agirSurCommerceAction } from "@/lib/admin/exploitation";
 import { MerchantTransferForm } from "./merchant-transfer-form";
 
 /**
@@ -195,6 +196,22 @@ export function MerchantSettingsForm({
         >
           {pending ? "Enregistrement…" : "ENREGISTRER"}
         </button>
+      </form>
+
+      {/* Plutôt que de dupliquer chaque écran du dashboard ici, on y entre.
+          Tout l'espace commerçant travaille alors sur ce commerce. */}
+      <form action={agirSurCommerceAction} className="mt-4">
+        <input type="hidden" name="merchantId" value={merchant.id} />
+        <button
+          type="submit"
+          className="w-full rounded-lg border border-brand/50 px-4 py-3 font-display text-sm tracking-[0.04em] text-brand"
+        >
+          AGIR SUR CE COMMERCE
+        </button>
+        <span className="mt-1.5 block text-xs text-fg-faint">
+          Programme, logo, clients, scan : vous travaillez dans son espace,
+          sans son mot de passe. Un bandeau vous le rappellera.
+        </span>
       </form>
 
       {/* La seule chose de l'espace commerçant reprise ici : un commerce

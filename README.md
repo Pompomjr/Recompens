@@ -410,6 +410,25 @@ Par ordre d'importance, hors périmètre V0.1 déjà livré.
 
 - [ ] **Liste des clients** (`/dashboard/customers`), encore en placeholder.
 
+## Exploitation (`/admin`)
+
+L'accès s'ouvre au rôle `ADMIN` **et** aux adresses listées dans
+`ADMIN_EMAILS` (séparées par des virgules). Cette seconde porte existe parce
+que l'exploitant est aussi commerçant de ses commerces de démonstration : lui
+donner le rôle `ADMIN` lui ferait perdre `/dashboard`.
+
+Trois gestes y vivent :
+
+- **régler** un commerce — style de carte, silhouette, couleur, délai
+  anti-cumul, décor du QR ;
+- **agir sur un commerce** — un cookie désigne le commerce, et tout l'espace
+  commerçant travaille dessus. La session Supabase reste celle de
+  l'exploitant : le cookie ne fait autorité sur rien, `estAdmin()` est
+  revérifié en base à chaque requête ;
+- **le transmettre** à son propriétaire — bascule de l'adresse
+  d'authentification, l'identifiant du programme ne bouge pas, donc
+  l'affichette imprimée reste valable.
+
 ## Points d'architecture à retenir
 
 - Le compteur de visites (`visit_count`) n'est **jamais** modifié depuis le

@@ -7,7 +7,7 @@ import { PasswordForm } from "@/components/merchant/password-form";
 
 // cf SPEC §6 — paramètres du commerce.
 export default async function SettingsPage() {
-  const { merchant } = await requireMerchant();
+  const { merchant, exploitation } = await requireMerchant();
   const logoUrl = safeLogoUrl(merchant.logoUrl);
 
   return (
@@ -45,7 +45,17 @@ export default async function SettingsPage() {
         </form>
       ) : null}
 
-      <PasswordForm />
+      {/* En mode exploitation, ce formulaire changerait le mot de passe de
+          l'EXPLOITANT, pas celui du commerçant : la session Supabase reste la
+          sienne. On le retire plutôt que de laisser un piège. */}
+      {exploitation ? (
+        <p className="rounded-xl border border-line bg-surface-raised p-5 text-sm text-fg-faint">
+          Le mot de passe se change depuis le compte du commerçant. Faites-lui
+          utiliser « Mot de passe oublié » sur la page de connexion.
+        </p>
+      ) : (
+        <PasswordForm />
+      )}
 
     </main>
   );

@@ -9,6 +9,7 @@ import { logoutAction } from "@/lib/auth/actions";
 import { BrandMarkSolid } from "@/components/brand/logo";
 import { MerchantLogo } from "@/components/merchant/merchant-logo";
 import { estAdmin } from "@/lib/auth/admin-access";
+import { revenirAMonCompteAction } from "@/lib/admin/exploitation";
 import { safeLogoUrl } from "@/lib/merchant/logo";
 
 /**
@@ -33,12 +34,15 @@ export default async function DashboardLayout({
   // L'exploitant est aussi commerçant : il lui faut un chemin vers /admin
   // depuis son propre dashboard, sinon la page n'existe qu'en la tapant.
   let exploitant = false;
+  let exploitation = false;
 
   try {
-    const { user, merchant } = await requireMerchant();
+    const { user, merchant, exploitation: agitPourAutrui } =
+      await requireMerchant();
     merchantName = merchant.name;
     merchantLogo = safeLogoUrl(merchant.logoUrl);
     exploitant = estAdmin(user);
+    exploitation = agitPourAutrui;
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       redirect("/login?next=/dashboard");
@@ -51,6 +55,27 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-surface text-fg">
+      {/* Agir sur le commerce d'autrui ne doit jamais être discret : sans ce
+          bandeau, on croit régler son propre commerce et on modifie celui du
+          voisin. Il est donc en haut, en couleur, et porte la sortie. */}
+      {exploitation ? (
+        <div
+          data-hors-impression
+          className="flex items-center justify-center gap-4 bg-amber-400/15 px-5 py-2.5 text-center"
+        >
+          <span className="font-mono text-[11px] tracking-[0.12em] text-amber-200">
+            VOUS AGISSEZ SUR {merchantName.toUpperCase()}
+          </span>
+          <form action={revenirAMonCompteAction}>
+            <button
+              type="submit"
+              className="font-mono text-[11px] tracking-[0.12em] text-amber-100 underline"
+            >
+              REVENIR À MON COMPTE
+            </button>
+          </form>
+        </div>
+      ) : null}
       <header className="mx-auto flex w-full max-w-2xl items-center justify-between gap-4 border-b border-line px-5 py-4">
         <Link href="/dashboard" className="flex items-center gap-2.5">
           <MerchantLogo
