@@ -5,6 +5,7 @@ import type { CardStyle, VesselShape } from "@prisma/client";
 import { updateMerchantSettingsAction } from "@/lib/admin/actions";
 import { initialFormState, type FormState } from "@/lib/forms/state";
 import { MerchantLogo } from "@/components/merchant/merchant-logo";
+import { MerchantTransferForm } from "./merchant-transfer-form";
 
 /**
  * Les réglages d'un commerce, dans l'écran d'exploitation.
@@ -35,6 +36,7 @@ export function MerchantSettingsForm({
     minMinutesBetweenVisits: number | null;
     programName: string | null;
     clients: number;
+    ownerEmail: string | null;
   };
 }) {
   const [state, formAction, pending] = useActionState<FormState, FormData>(
@@ -193,6 +195,13 @@ export function MerchantSettingsForm({
           {pending ? "Enregistrement…" : "ENREGISTRER"}
         </button>
       </form>
+
+      <MerchantTransferForm
+        merchantId={merchant.id}
+        merchantName={merchant.name}
+        ownerEmail={merchant.ownerEmail}
+        clients={merchant.clients}
+      />
     </details>
   );
 }

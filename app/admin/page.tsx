@@ -34,7 +34,10 @@ export default async function AdminPage() {
   const [merchants, cartesParProgramme, programmes] = await Promise.all([
     prisma.merchant.findMany({
       orderBy: { createdAt: "asc" },
-      include: { programs: { orderBy: { createdAt: "asc" }, take: 1 } },
+      include: {
+        owner: true,
+        programs: { orderBy: { createdAt: "asc" }, take: 1 },
+      },
     }),
     prisma.loyaltyMembership.groupBy({
       by: ["programId"],
@@ -88,6 +91,7 @@ export default async function AdminPage() {
                   merchant.programs[0]?.minMinutesBetweenVisits ?? null,
                 programName: merchant.programs[0]?.name ?? null,
                 clients: parCommerce.get(merchant.id) ?? 0,
+                ownerEmail: merchant.owner.email,
               }}
             />
           ))}
