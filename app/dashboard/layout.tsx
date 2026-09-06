@@ -8,6 +8,7 @@ import {
 import { logoutAction } from "@/lib/auth/actions";
 import { BrandMarkSolid } from "@/components/brand/logo";
 import { MerchantLogo } from "@/components/merchant/merchant-logo";
+import { estAdmin } from "@/lib/auth/admin-access";
 import { safeLogoUrl } from "@/lib/merchant/logo";
 
 /**
@@ -29,11 +30,15 @@ export default async function DashboardLayout({
 }: LayoutProps<"/dashboard">) {
   let merchantName: string;
   let merchantLogo: string | null;
+  // L'exploitant est aussi commerçant : il lui faut un chemin vers /admin
+  // depuis son propre dashboard, sinon la page n'existe qu'en la tapant.
+  let exploitant = false;
 
   try {
-    const { merchant } = await requireMerchant();
+    const { user, merchant } = await requireMerchant();
     merchantName = merchant.name;
     merchantLogo = safeLogoUrl(merchant.logoUrl);
+    exploitant = estAdmin(user);
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       redirect("/login?next=/dashboard");
@@ -60,14 +65,24 @@ export default async function DashboardLayout({
             {merchantName}
           </span>
         </Link>
-        <form action={logoutAction}>
-          <button
-            type="submit"
-            className="font-mono text-[11px] tracking-[0.16em] text-fg-faint underline"
-          >
-            DÉCONNEXION
-          </button>
-        </form>
+        <span className="flex items-center gap-4">
+          {exploitant ? (
+            <Link
+              href="/admin"
+              className="font-mono text-[11px] tracking-[0.16em] text-brand underline"
+            >
+              EXPLOITATION
+            </Link>
+          ) : null}
+          <form action={logoutAction}>
+            <button
+              type="submit"
+              className="font-mono text-[11px] tracking-[0.16em] text-fg-faint underline"
+            >
+              DÉCONNEXION
+            </button>
+          </form>
+        </span>
       </header>
       <div className="flex flex-1 flex-col">{children}</div>
 

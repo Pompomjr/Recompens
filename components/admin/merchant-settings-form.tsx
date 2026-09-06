@@ -5,6 +5,7 @@ import type { CardStyle, VesselShape } from "@prisma/client";
 import { updateMerchantSettingsAction } from "@/lib/admin/actions";
 import { initialFormState, type FormState } from "@/lib/forms/state";
 import { MerchantLogo } from "@/components/merchant/merchant-logo";
+import Link from "next/link";
 import { MerchantTransferForm } from "./merchant-transfer-form";
 
 /**
@@ -195,6 +196,16 @@ export function MerchantSettingsForm({
           {pending ? "Enregistrement…" : "ENREGISTRER"}
         </button>
       </form>
+
+      {/* La seule chose de l'espace commerçant reprise ici : un commerce
+          transféré n'est plus accessible depuis /dashboard, et c'est justement
+          après l'installation qu'on a besoin de réimprimer. */}
+      <Link
+        href={`/admin/${merchant.id}/affiche`}
+        className="mt-4 block rounded-lg border border-line p-4 text-sm font-medium text-fg-soft"
+      >
+        Imprimer l&apos;affichette →
+      </Link>
 
       <MerchantTransferForm
         merchantId={merchant.id}
