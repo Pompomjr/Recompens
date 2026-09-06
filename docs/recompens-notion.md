@@ -46,6 +46,7 @@ Les anciens QR imprimés pointant sur `fidelizzz.vercel.app` continuent de fonct
 ## Accueillir un nouveau commerçant
 
 La marche à suivre, du premier contact à la première visite validée.
+Pour ce qui se passe **avant** — qui démarcher, quoi lui dire, quels réglages prévoir selon son métier — voir `premiers-commercants.md`.
 
 ### 1. Créer son compte
 
@@ -104,6 +105,7 @@ change quand la règle change.
 ### Décisions produit en attente
 
 - [ ] **Cumul des récompenses** — les visites au-delà du seuil ne sont pas capitalisées. À trancher avec un vrai commerçant.
+- [ ] **Le client qui achète pour plusieurs personnes** — quatre sandwichs, une seule visite créditée. Le compteur suit les passages, pas les articles, et récompense donc le moins le plus gros ticket. À compter pendant le pilote avant de construire quoi que ce soit ; correctif envisagé et garde-fous dans `premiers-commercants.md`.
 - [ ] **Le QR client est partageable** — une capture d'écran fonctionne. Le délai anti-cumul limite les dégâts. Le QR tournant est hors périmètre pour l'instant.
 
 ### Améliorations identifiées
