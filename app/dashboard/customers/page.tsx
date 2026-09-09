@@ -21,6 +21,16 @@ export default async function CustomersPage() {
 
   const aRecompense = clients.filter((c) => c.rewardAvailable).length;
 
+  // Deux clients peuvent porter le même prénom — rien ne l'interdit, et deux
+  // « Lola » dans une liste sont indiscernables. On n'affiche le numéro de
+  // carte QUE pour les prénoms en double : le montrer partout ajouterait du
+  // bruit à toutes les lignes pour protéger le cas rare.
+  const prenomsEnDouble = new Set(
+    clients
+      .map((c) => c.firstName.trim().toLowerCase())
+      .filter((prenom, index, tous) => tous.indexOf(prenom) !== index)
+  );
+
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 p-5">
       <Link
@@ -58,6 +68,11 @@ export default async function CustomersPage() {
                 <span className="flex min-w-0 flex-col gap-0.5">
                   <span className="truncate font-medium text-fg">
                     {client.firstName}
+                    {prenomsEnDouble.has(client.firstName.trim().toLowerCase()) ? (
+                      <span className="ml-2 font-mono text-[11px] font-normal text-fg-faint">
+                        N° {client.id.slice(0, 4).toUpperCase()}
+                      </span>
+                    ) : null}
                   </span>
                   <span className="font-mono text-[11px] tracking-wide text-fg-faint">
                     {client.derniereVisite
