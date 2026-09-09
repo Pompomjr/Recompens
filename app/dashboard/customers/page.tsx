@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireMerchant } from "@/lib/auth/session";
 import { getMerchantCustomers } from "@/lib/customers/queries";
 import { formatDate, visitsLabel } from "@/lib/format";
+import { VisiteOubliee } from "@/components/merchant/visite-oubliee";
 
 /**
  * cf SPEC §6 — la liste des clients du commerce.
@@ -71,16 +72,26 @@ export default async function CustomersPage() {
                       RÉCOMPENSE
                     </span>
                   ) : null}
-                  <span className="text-right">
-                    <span className="block text-lg font-semibold tabular-nums text-fg">
-                      {client.visitCount}
-                      <span className="text-fg-faint">
-                        /{client.visitsRequired}
+                  <span className="flex flex-col items-end gap-1">
+                    <span className="text-right">
+                      <span className="block text-lg font-semibold tabular-nums text-fg">
+                        {client.visitCount}
+                        <span className="text-fg-faint">
+                          /{client.visitsRequired}
+                        </span>
+                      </span>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-fg-faint">
+                        {visitsLabel(client.visitsRequired)}
                       </span>
                     </span>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-fg-faint">
-                      {visitsLabel(client.visitsRequired)}
-                    </span>
+
+                    {/* Le rattrapage vit ICI et pas sur l'écran de scan : on
+                        s'en aperçoit après coup, en relisant sa liste, jamais
+                        avec le client devant soi. */}
+                    <VisiteOubliee
+                      membershipId={client.id}
+                      firstName={client.firstName}
+                    />
                   </span>
                 </span>
               </li>
@@ -89,7 +100,9 @@ export default async function CustomersPage() {
 
           <p className="text-xs text-fg-faint">
             {clients.length} {clients.length > 1 ? "cartes" : "carte"} au total.
-            Le compteur ne se modifie qu&apos;en scannant la carte du client.
+            Le compteur se modifie en scannant la carte du client — ou, en cas
+            d&apos;oubli, avec « visite oubliée », qui laisse une trace dans
+            l&apos;historique.
           </p>
         </>
       )}

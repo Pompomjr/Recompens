@@ -93,6 +93,75 @@ export async function addVisit(params: {
 }
 
 /**
+ * Visite ajoutée APRÈS COUP, sans scan.
+ *
+ * Le cas est arrivé dès le premier commerce en activité : une cliente crée sa
+ * carte au comptoir, le commerçant sert, discute, et oublie de scanner. Elle
+ * repart avec une carte à zéro alors qu'elle a consommé. Sans rattrapage, la
+ * seule issue est de la scanner deux fois à son prochain passage — à condition
+ * d'y penser, et que le délai anti-cumul le permette.
+ *
+ * Deux différences assumées avec `addVisit()` :
+ *
+ * 1. Pas de qrToken. Le client n'est pas là, c'est tout l'objet. On part donc
+ *    du `membershipId`, et on revérifie qu'il appartient bien à CE commerce
+ *    (cf SPEC §18) — la garantie ne change pas, seule sa source change.
+ *
+ * 2. Pas de délai anti-cumul. Une visite oubliée est par définition hors de
+ *    la fenêtre. Et ce délai protège contre un CLIENT qui ferait scanner sa
+ *    carte deux fois de suite, pas contre le commerçant : lui n'a aucun
+ *    intérêt à gonfler un compteur dont il paiera la récompense.
+ *
+ * La description le dit en toutes lettres : l'historique doit distinguer un
+ * scan d'un rattrapage, sans quoi il ne prouve plus rien (cf SPEC §4).
+ */
+export async function addForgottenVisit(params: {
+  merchantId: string;
+  membershipId: string;
+  createdByUserId: string;
+}) {
+  const { merchantId, membershipId, createdByUserId } = params;
+
+  const membership = await prisma.loyaltyMembership.findUnique({
+    where: { id: membershipId },
+    include: { program: true },
+  });
+
+  if (!membership) throw new ForbiddenError("Carte introuvable");
+
+  if (membership.program.merchantId !== merchantId) {
+    throw new ForbiddenError("Ce client n'appartient pas à votre commerce");
+  }
+
+  if (!membership.program.active) {
+    throw new ForbiddenError("Ce programme de fidélité n'est plus actif");
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const newVisitCount = membership.visitCount + 1;
+    const rewardAvailable = newVisitCount >= membership.program.visitsRequired;
+
+    const updated = await tx.loyaltyMembership.update({
+      where: { id: membership.id },
+      data: { visitCount: newVisitCount, rewardAvailable },
+    });
+
+    await tx.transaction.create({
+      data: {
+        membershipId: membership.id,
+        merchantId,
+        type: "VISIT",
+        visitDelta: 1,
+        description: `Visite ajoutée après coup — ${newVisitCount}/${membership.program.visitsRequired}`,
+        createdBy: createdByUserId,
+      },
+    });
+
+    return { membership: updated };
+  });
+}
+
+/**
  * cf SPEC §13. Remet le compteur à zéro et consomme la récompense.
  * Le serveur revérifie reward_available == true avant toute action
  * (cf SPEC §18: "Reward → utilisation deux fois : Impossible.").
