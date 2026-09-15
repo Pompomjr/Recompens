@@ -27,6 +27,7 @@ export function LoyaltyCard({
   rewardAvailable,
   qrDataUrl,
   justStamped,
+  showQr = true,
 }: {
   merchantName: string;
   /** Logo du commerce, ou null : la pastille retombe sur l'initiale. */
@@ -42,6 +43,12 @@ export function LoyaltyCard({
   qrDataUrl: string;
   /** Vrai juste après une visite validée : le dernier tampon s'abat. */
   justStamped: boolean;
+  /**
+   * Faux sur la page d'accueil, où la carte est un EXEMPLE. Un bouton
+   * « Afficher mon QR » y révélerait un code factice qu'un commerçant
+   * tenterait de scanner.
+   */
+  showQr?: boolean;
 }) {
   const { ink, onInk } = cardTheme(brandColor);
   const remaining = Math.max(visitsRequired - visitCount, 0);
@@ -200,7 +207,9 @@ export function LoyaltyCard({
           </div>
         )}
 
-        <CardQr qrDataUrl={qrDataUrl} buttonBg={ink} buttonFg={onInk} />
+        {showQr ? (
+          <CardQr qrDataUrl={qrDataUrl} buttonBg={ink} buttonFg={onInk} />
+        ) : null}
       </div>
     </div>
   );

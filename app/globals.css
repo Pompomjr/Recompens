@@ -70,6 +70,18 @@ body {
 }
 
 /*
+ * La sélection de texte aux couleurs de la marque.
+ *
+ * Le navigateur la dessine par défaut dans le bleu du système : c'est le
+ * détail qui trahit une page assemblée plutôt que construite. Vert foncé sur
+ * vert, 5,8:1 — lisible sur les pages sombres comme sur le papier.
+ */
+::selection {
+  background: #2fbf71;
+  color: #10331f;
+}
+
+/*
  * Le tampon qui s'abat sur le papier — le geste du style « Ticket ».
  *
  * Il ne se joue QU'UNE fois, à l'ouverture de la carte après une visite

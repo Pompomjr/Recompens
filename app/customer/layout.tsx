@@ -28,7 +28,9 @@ export default async function CustomerLayout({
     firstName = customer.firstName;
   } catch (error) {
     if (error instanceof UnauthorizedError) {
-      redirect("/login?next=/customer");
+      // Même raison que dans proxy.ts : un client n'a pas de mot de passe,
+      // la page de connexion est une impasse pour lui.
+      redirect("/retrouver-ma-carte");
     }
     if (error instanceof ForbiddenError) {
       redirect("/");

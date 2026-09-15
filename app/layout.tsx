@@ -58,9 +58,23 @@ const brandStencil = Saira_Stencil({
 });
 
 export const metadata: Metadata = {
+  // Sans base, Next ne peut pas écrire d'URL absolue pour l'image de partage
+  // (app/opengraph-image.tsx), et WhatsApp comme Facebook ignorent les
+  // chemins relatifs : l'aperçu disparaîtrait sans erreur visible.
+  metadataBase: new URL("https://recompens.com"),
   title: "Recompens — Cartes de fidélité digitales",
   description:
     "La carte de fidélité de vos clients, sur leur téléphone. Aucune application à installer.",
+  openGraph: {
+    title: "Recompens — Cartes de fidélité digitales",
+    description:
+      "La carte de fidélité de vos clients, sur leur téléphone. Aucune application à installer.",
+    url: "/",
+    siteName: "Recompens",
+    locale: "fr_BE",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -67,6 +67,18 @@ export async function proxy(request: NextRequest) {
 
   if (protectedMatch) {
     if (!user) {
+      // Un CLIENT n'a jamais de mot de passe : sa carte tient à une session
+      // anonyme. L'envoyer vers /login lui présentait un formulaire email +
+      // mot de passe qu'il ne peut pas remplir — c'est ce que faisait
+      // « Voir ma carte » depuis l'accueil, et toute carte dont la session a
+      // expiré. Sa porte, c'est la récupération de carte.
+      if (protectedMatch.role === "CUSTOMER") {
+        return redirectPreservingSession(
+          new URL("/retrouver-ma-carte", request.url),
+          response
+        );
+      }
+
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("next", `${pathname}${search}`);
       return redirectPreservingSession(loginUrl, response);
