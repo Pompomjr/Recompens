@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { cardTheme } from "@/lib/theme";
 import { formatVisits } from "@/lib/format";
 import { JoinForm } from "@/components/customer/join-form";
+import { MerchantLogo } from "@/components/merchant/merchant-logo";
 
 /**
  * cf SPEC §8 — Page atteinte en scannant le QR du commerce.
@@ -68,13 +69,20 @@ export default async function JoinPage({
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-8 bg-paper-tint px-6 py-10">
       <div className="flex flex-col items-center gap-5 text-center">
-        <div
-          className="flex size-20 items-center justify-center rounded-full font-display text-3xl"
-          style={{ backgroundColor: ink, color: onInk }}
-          aria-hidden
-        >
-          {program.merchant.name.trim().charAt(0).toUpperCase()}
-        </div>
+        {/* Le vrai logo du commerce, comme sur la carte et sur l'affichette.
+            Cet écran affichait une initiale dessinée à la main : le client
+            qui venait de scanner l'affichette voyait donc une pastille, puis
+            le logo sur sa carte une seconde plus tard. C'est le seul endroit
+            où l'enseigne doit être reconnue instantanément. Le repli sur
+            l'initiale reste celui de `MerchantLogo`, à l'identique. */}
+        <MerchantLogo
+          name={program.merchant.name}
+          logoUrl={program.merchant.logoUrl}
+          size={80}
+          color={onInk}
+          background={ink}
+          className="font-display"
+        />
 
         <div className="flex flex-col gap-2">
           <span className="font-mono text-[11px] font-semibold tracking-[0.2em] text-[color:var(--ink-soft)]">

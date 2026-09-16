@@ -20,8 +20,14 @@ export default async function LoginPage({
         <h1 className="font-display text-2xl tracking-tight text-fg">
           Connexion
         </h1>
+        {/* Cette page annonçait « votre espace commerçant OU votre carte de
+            fidélité ». Or un client n'a pas de mot de passe — sa carte
+            s'ouvre depuis son téléphone ou par un lien envoyé par mail. Il
+            saisissait donc une adresse et un mot de passe inventé, se voyait
+            refusé, et croyait sa carte perdue. La page ne promet plus que ce
+            qu'elle sait faire, et la porte du client est nommée plus bas. */}
         <p className="text-sm text-fg-soft">
-          Accédez à votre espace commerçant ou à votre carte de fidélité.
+          Votre espace commerçant.
         </p>
       </div>
 
@@ -52,27 +58,40 @@ export default async function LoginPage({
 
       <LoginForm next={next} />
 
-      <p className="text-center text-sm text-fg-soft">
-        <Link href="/forgot-password" className="font-medium text-brand underline">
-          Mot de passe oublié ?
-        </Link>
-      </p>
+      {/* Trois phrases centrées du même poids se lisaient comme une liste de
+          liens équivalents, alors qu'elles s'adressent à deux publics et à
+          trois moments différents. Elles sont désormais hiérarchisées : le
+          dépannage du commerçant colle au formulaire, sa création de compte
+          suit, et la porte du CLIENT — un autre public, qui ne se connecte
+          pas ici — est mise à part par un filet. */}
+      <div className="-mt-4 flex flex-col gap-4">
+        <p className="text-sm text-fg-soft">
+          <Link
+            href="/forgot-password"
+            className="font-medium text-brand underline"
+          >
+            Mot de passe oublié ?
+          </Link>
+        </p>
 
-      <p className="text-center text-sm text-fg-soft">
-        Client, vous avez perdu votre carte ?{" "}
+        <p className="text-sm text-fg-soft">
+          Pas encore de compte ?{" "}
+          <Link href="/register" className="font-medium text-brand underline">
+            Créer mon commerce
+          </Link>
+        </p>
+      </div>
+
+      <p className="border-t border-line pt-6 text-sm text-fg-soft">
+        Vous êtes client d&apos;un commerce et vous avez perdu votre carte ?
+        Elle ne s&apos;ouvre pas avec un mot de passe —{" "}
         <Link
           href="/retrouver-ma-carte"
           className="font-medium text-brand underline"
         >
-          La retrouver
+          retrouvez-la ici
         </Link>
-      </p>
-
-      <p className="text-center text-sm text-fg-soft">
-        Vous êtes commerçant et n&apos;avez pas encore de compte ?{" "}
-        <Link href="/register" className="font-medium text-brand underline">
-          Créer mon compte
-        </Link>
+        .
       </p>
     </main>
   );
