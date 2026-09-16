@@ -140,20 +140,68 @@ export default async function HomePage({
         </figure>
       </section>
 
+      {/* Les étapes, en tampons.
+          C'était la section la plus plate de la page : de petits chiffres
+          verts et du texte gris, sans aucun des moyens que le reste de la
+          page possède déjà. Les numéros prennent donc la forme du tampon de
+          la carte — même cercle, même inclinaison calculée — et un trait
+          pointillé, celui des cases vides du ticket, les relie en parcours.
+          Rien d'autre n'est ajouté : pas de nouvelle couleur, pas de nouvelle
+          police, et aucun mouvement, le tampon du haut de page restant le
+          seul geste animé. */}
       <section className="mx-auto w-full max-w-5xl px-6">
-        <ol className="flex max-w-2xl flex-col gap-4 border-t border-paper/15 pt-10">
-          {ETAPES.map((etape, index) => (
-            <li key={index} className="flex gap-4">
-              <span
-                className="font-display text-sm leading-7"
-                style={{ color: "#2FBF71" }}
-              >
-                0{index + 1}
-              </span>
-              <span className="text-base leading-7 text-paper/70">{etape}</span>
-            </li>
-          ))}
-        </ol>
+        <div className="border-t border-paper/15 pb-2 pt-14 md:pt-20">
+          <ol className="flex flex-col md:grid md:grid-cols-3 md:gap-10">
+            {ETAPES.map((etape, index) => {
+              // Même formule que les tampons de LoyaltyCard : chacun posé de
+              // travers, de façon stable d'un affichage à l'autre.
+              const tilt = ((index * 37) % 17) - 8;
+              const derniere = index === ETAPES.length - 1;
+
+              return (
+                <li
+                  key={index}
+                  className={`relative grid grid-cols-[4rem_1fr] gap-5 md:flex md:flex-col md:gap-6 ${
+                    derniere ? "" : "pb-10 md:pb-0"
+                  }`}
+                >
+                  {derniere ? null : (
+                    <>
+                      {/* Trait vertical sur téléphone, horizontal au-delà :
+                          il part du bord du tampon et s'arrête sur le suivant. */}
+                      <span
+                        className="absolute bottom-0 left-8 top-16 border-l-2 border-dashed border-paper/20 md:hidden"
+                        aria-hidden
+                      />
+                      <span
+                        className="absolute -right-10 left-[5.5rem] top-8 hidden border-t-2 border-dashed border-paper/20 md:block"
+                        aria-hidden
+                      />
+                    </>
+                  )}
+
+                  {/* Le numéro est déjà porté par la liste ordonnée : le
+                      tampon est décoratif pour les lecteurs d'écran. */}
+                  <span
+                    className="relative z-10 flex size-16 shrink-0 items-center justify-center rounded-full border-[3px] bg-ink font-display text-2xl"
+                    style={{
+                      borderColor: "#2FBF71",
+                      color: "#2FBF71",
+                      transform: `rotate(${tilt}deg)`,
+                    }}
+                    aria-hidden
+                  >
+                    {index + 1}
+                  </span>
+
+                  <span className="pt-4 text-lg leading-8 text-paper/80 md:pt-0">
+                    {etape}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
       </section>
 
       {/* Le tarif. Un commerçant qui ne trouve ni prix ni moyen de parler à
